@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public abstract class Subject:MonoBehaviour {
 
-    private List<Observer> observers = new List<Observer>();
+    protected List<Observer> observers = new List<Observer>();
     
     public void Attach(Observer observer)
     {
@@ -16,11 +16,11 @@ public abstract class Subject:MonoBehaviour {
         observers.Remove(observer);
     }
 
-    public void Notify()
+    public virtual void Notify()
     {
         foreach (Observer obs in observers)
         {
-            obs.UpdateSubjectList(this);
+            obs.UpdateSubject(this);
         }
     }
 }

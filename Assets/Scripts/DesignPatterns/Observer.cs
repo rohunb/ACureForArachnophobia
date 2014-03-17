@@ -6,5 +6,6 @@ public abstract class Observer: MonoBehaviour
 {
     public List<Subject> subjects;
 
-    abstract public void UpdateSubjectList(Subject subject);
+    virtual public void UpdateSubject(Subject subject){}
+    virtual public void UpdateDronesInSight(List<DroneBehavior> drones){}
 }

@@ -1,40 +1,58 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Soldier : MonoBehaviour {
+public class Soldier : Observer {
 
     public float moveSpeed=10f;
     public Vector3 destination;
     public float sightRange;
+    
+    public GameObject soldierSight;
+    public Weapon currentWeapon;
+    public Transform shootPoint;
 
     public bool selected;
 
-    bool movingToDest;
+    Weapon_Lasers weapon;
     
+    bool movingToDest;
     Vector3 moveDirection;
     CharacterController controller;
     Projector selectionBox;
     LineRenderer line;
     Color lineColour = Color.blue;
-    public float lineWidth = 0.2f;
-    public int lengthFactor=4;
+
+    KDTree dronesInSightTree;
+    SoldierSight sight;
+    public List<DroneBehavior> dronesInSight;
+    Vector3[] dronesInSightPosArr;
 
     enum SoldierState { Moving, Guarding, AttackMove, Attacking}
     SoldierState state;
+    SoldierState prevState;
     void Awake()
     {
         controller = GetComponent<CharacterController>();
         selectionBox = GetComponentInChildren<Projector>();
         line = GetComponent<LineRenderer>();
+        sight = soldierSight.GetComponent<SoldierSight>();
+        sight.sightRange = sightRange;
+
     }
 	// Use this for initialization
 	void Start () {
         destination = transform.position;
         moveDirection = Vector3.zero;
         state = SoldierState.Guarding;
+        prevState = state;
         selected = false;
         line.enabled = false;
-        line.SetWidth(lineWidth, lineWidth);
+        
+        //testing weapons
+        //currentWeapon = weapon;
+        
+        
 	}
 	
 	// Update is called once per frame
@@ -46,39 +64,108 @@ public class Soldier : MonoBehaviour {
             case SoldierState.Moving:
                 break;
             case SoldierState.Guarding:
-                animation.CrossFade("idle");
-                line.enabled = false;
-                break;
-            case SoldierState.AttackMove:
-                if (Vector3.Distance(destination, transform.position) > .5f)
+                   
+                if (!CheckCanAttack())
                 {
-                    moveDirection = (destination - transform.position).normalized;
-                    transform.rotation = Quaternion.LookRotation(moveDirection);
-                    //moveDirection = transform.TransformDirection(moveDirection);
-                    moveDirection = transform.forward * moveSpeed;
-                    controller.SimpleMove(moveDirection);
-                    DrawLine(destination, Color.red);
-                    animation.CrossFade("run");
+                    animation.CrossFade("idle");
+                    line.enabled = false;
                 }
                 else
                 {
-                    state = SoldierState.Guarding;
+                    prevState = SoldierState.Guarding;
+                }
+                break;
+            case SoldierState.AttackMove:
+                if (!CheckCanAttack())
+                {
+                    if (Vector3.Distance(destination, transform.position) > .5f)
+                    {
+                        moveDirection = (destination - transform.position).normalized;
+                        transform.rotation = Quaternion.LookRotation(moveDirection);
+                        //moveDirection = transform.TransformDirection(moveDirection);
+                        moveDirection = transform.forward * moveSpeed;
+                        controller.SimpleMove(moveDirection);
+                        DrawLine(destination, Color.red);
+                        animation.CrossFade("run");
+                    }
+                    else
+                    {
+                        state = SoldierState.Guarding;
+                    }
+                }
+                else
+                {
+                    prevState = SoldierState.AttackMove;
                 }
                 break;
             case SoldierState.Attacking:
+                if(CheckCanAttack())
+                    Attack();
                 break;
             default:
                 break;
         }
+        
         selectionBox.enabled = selected;
     }
-
+    bool CheckCanAttack()
+    {
+        if (dronesInSight.Count > 0)
+        {
+            state = SoldierState.Attacking;
+            //Debug.Log("state: " + state.ToString());
+            //Debug.Log("prev state: " + prevState.ToString());
+            
+            return true;
+        }
+        else
+        {
+            state = prevState;
+            return false;
+        }
+    }
     public void SetDestination(Vector3 _dest)
     {
         destination = _dest;
         state = SoldierState.AttackMove;
 
     }
+    void Attack()
+    {
+        line.enabled = true;
+        DroneBehavior target = NearestDrone();
+        //line.SetPosition(0, transform.position);
+        //line.SetPosition(1, new Vector3(target.transform.position.x, transform.position.y,target.transform.position.z));
+        AimWeaponAt(target.transform);
+        animation.CrossFade("attack");
+        currentWeapon.Fire();
+
+    }
+    void AimWeaponAt(Transform target)
+    {
+        transform.LookAt(target);
+    }
+    public override void UpdateDronesInSight(List<DroneBehavior> drones)
+    {
+        dronesInSight = drones;
+        if(drones.Count>0)
+            UpdateKDTree();
+    }
+    void UpdateKDTree()
+    {
+        dronesInSightPosArr = new Vector3[dronesInSight.Count];
+        for (int i = 0; i < dronesInSightPosArr.Length; i++)
+        {
+            dronesInSightPosArr[i] = dronesInSight[i].transform.position;
+        }
+        dronesInSightTree = KDTree.MakeFromPoints(dronesInSightPosArr);
+    }
+    DroneBehavior NearestDrone()
+    {
+        int nearest = dronesInSightTree.FindNearest(transform.position);
+        return dronesInSight[nearest];
+    }
+
     void DrawLine(Vector3 destination, Color colour)
     {
         line.enabled = true;
