@@ -16,7 +16,7 @@ public class Weapon_Lasers : Weapon {
         
     }
 
-    public override void Fire()
+    public override void Fire(GameObject origin)
     {
         //Debug.Log("canfire " + canFire);
         if(currentTimer>=reloadTimer)

@@ -16,6 +16,7 @@ public class Health : MonoBehaviour {
     void Start()
     {
         health = maxHealth;
+        alive = true;
     }
     public void UpdateHealth(int amount)
     {
@@ -33,5 +34,12 @@ public class Health : MonoBehaviour {
     {
         //death
         alive = false;
+        if(Random.value>0.5f)
+            animation.CrossFade("death1");
+        else
+            animation.CrossFade("death2");
+        BoxCollider col = gameObject.GetComponent<BoxCollider>();
+        col.enabled = false;
+        Destroy(gameObject, 1.0f);
     }
 }

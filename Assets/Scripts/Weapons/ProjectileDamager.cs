@@ -13,7 +13,6 @@ public class ProjectileDamager : MonoBehaviour {
             switch (origin.tag)
             {
                 case "Soldier":
-
                     if (other.tag == "Enemy" || other.tag == "EnemyStructure")
                     {
                         //Instantiate(explosion, transform.position, Quaternion.identity);

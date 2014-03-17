@@ -16,6 +16,19 @@ public class SoldierSight : Subject {
         dronesInSight = new List<DroneBehavior>();
         col.radius = sightRange;
     }
+    void Update()
+    {
+        foreach (DroneBehavior drone in dronesInSight)
+        {
+            Health health_script = drone.gameObject.GetComponent<Health>();
+            if(!health_script.Alive)
+            {
+                dronesInSight.Remove(drone);
+                Notify();
+                break;
+            }
+        }
+    }
     public override void Notify()
     {
         foreach (Observer obs in observers)
@@ -36,6 +49,7 @@ public class SoldierSight : Subject {
             
         }
     }
+
     void OnTriggerExit(Collider other)
     {
         if (other.tag == "Enemy")

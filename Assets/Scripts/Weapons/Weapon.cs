@@ -19,7 +19,7 @@ public class Weapon : MonoBehaviour {
     //    canFire = true;
 
     //}
-	public virtual void Fire()
+	public virtual void Fire(GameObject origin)
     {
         
     }

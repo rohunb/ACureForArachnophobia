@@ -138,7 +138,7 @@ public class Soldier : Observer {
         //line.SetPosition(1, new Vector3(target.transform.position.x, transform.position.y,target.transform.position.z));
         AimWeaponAt(target.transform);
         animation.CrossFade("attack");
-        currentWeapon.Fire();
+        currentWeapon.Fire(gameObject);
 
     }
     void AimWeaponAt(Transform target)
@@ -147,6 +147,7 @@ public class Soldier : Observer {
     }
     public override void UpdateDronesInSight(List<DroneBehavior> drones)
     {
+        //Debug.Log("Drone count: " + drones.Count);
         dronesInSight = drones;
         if(drones.Count>0)
             UpdateKDTree();
