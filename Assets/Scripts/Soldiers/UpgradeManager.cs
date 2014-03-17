@@ -3,13 +3,34 @@ using System.Collections;
 
 public class UpgradeManager : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    
+    
+    private int credits;
+    public int GetCredits()
+    {
+        return credits;
+    }
+    public bool CreateTransaction(int amount)
+    {
+        if (credits + amount >= 0)
+        {
+            credits += amount;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    void OnGUI()
+    {
+        DisplayUpgradeButtons();
+
+    }
+    void DisplayUpgradeButtons()
+    {
+         
+    }
+
+
 }

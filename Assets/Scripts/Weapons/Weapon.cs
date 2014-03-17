@@ -13,6 +13,7 @@ public class Weapon : MonoBehaviour {
     public float range;
     protected bool canFire=true;
     public float currentTimer = 0f;
+    public int cost;
 
 	// Use this for initialization
     //protected virtual void Start () {
@@ -23,5 +24,6 @@ public class Weapon : MonoBehaviour {
     {
         
     }
+    public virtual void StopFiring() { }
 
 }

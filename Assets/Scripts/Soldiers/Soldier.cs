@@ -62,11 +62,13 @@ public class Soldier : Observer {
         switch (state)
         {
             case SoldierState.Moving:
+                currentWeapon.StopFiring();
                 break;
             case SoldierState.Guarding:
                    
                 if (!CheckCanAttack())
                 {
+                    currentWeapon.StopFiring();
                     animation.CrossFade("idle");
                     line.enabled = false;
                 }
@@ -103,6 +105,7 @@ public class Soldier : Observer {
                     Attack();
                 break;
             default:
+                currentWeapon.StopFiring();
                 break;
         }
         
