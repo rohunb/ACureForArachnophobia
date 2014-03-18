@@ -75,7 +75,7 @@ public class Soldier : Observer {
                 }
                 else
                 {
-                   // state = SoldierState.Guarding;
+                    state = SoldierState.Guarding;
                 }
                 break;
             case SoldierState.Guarding:
@@ -108,7 +108,7 @@ public class Soldier : Observer {
                     }
                     else
                     {
-                        //state = SoldierState.Guarding;
+                        state = SoldierState.Guarding;
                     }
                 }
                 else

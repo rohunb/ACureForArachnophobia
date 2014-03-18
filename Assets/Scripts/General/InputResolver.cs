@@ -9,7 +9,7 @@ public class InputResolver : MonoBehaviour {
     public int enemyUnitsLayer;
     public int enemyBuildingsLayer;
     public int GUILayer;
-
+    public GameObject posMarker;
     public enum InputResponse { Select, DragSelect, AttackMove,Move, ViewUp, ViewDown, ViewLeft,ViewRight,Zoom,Cancel,BuildMenu,BuildUnit,BuildTank}
 
     public List<Soldier> selectedSoldiers;
@@ -45,17 +45,21 @@ public class InputResolver : MonoBehaviour {
             case InputResponse.AttackMove:
                 if (CalculateMoveDestination(out destination))
                 {
-                    //if (selectedSoldiers.Count > 1)
-                    //{
-                    //    groupMoveDest = CalculateGroupMove(destination);
-                    //    for (int i = 0; i < selectedSoldiers.Count; i++)
-                    //    {
-                    //        selectedSoldiers[i].SetAttackMove(new Vector3( groupMoveDest[i].x,selectedSoldiers[i].transform.position.y, groupMoveDest[i].z));
-                    //    }
-                        
-                    //}
-                    //else
+                    if (selectedSoldiers.Count > 1)
+                    {
+                        groupMoveDest = CalculateGroupMove(destination);
+                        for (int i = 0; i < selectedSoldiers.Count; i++)
+                        {
+                            selectedSoldiers[i].SetAttackMove(new Vector3(groupMoveDest[i].x, selectedSoldiers[i].transform.position.y, groupMoveDest[i].z));
+                        }
+
+                    }
+                    else
                         selectedSoldiers[0].SetAttackMove(new Vector3(destination.x, selectedSoldiers[0].transform.position.y, destination.z));
+                    //foreach (Soldier soldier in selectedSoldiers)
+                    //{
+                    //    soldier.SetMove(new Vector3(destination.x, soldier.transform.position.y, destination.z));
+                    //}
                 }
                 break;
             case InputResponse.Move:
@@ -133,32 +137,33 @@ public class InputResolver : MonoBehaviour {
         Vector3[] posArr = new Vector3[numSoldiers];
         Vector3[] groupMoveDests = new Vector3[numSoldiers];
         Vector3[] localPos = new Vector3[numSoldiers];
-        float formationGap=3.0f;
+        float formationGap=1.5f;
 
         for (int i = 0; i < numSoldiers; i++)
         {
             posArr[i]=selectedSoldiers[i].transform.position;
             averagePos += posArr[i];
         }
+
+        averagePos = averagePos / numSoldiers;
         
-        averagePos = averagePos / selectedSoldiers.Count;
         KDTree posTree = KDTree.MakeFromPoints(posArr);
         int nearestToAvgPos=posTree.FindNearest(averagePos);
         //calculating local positions
-        for (int i = 0; i < numSoldiers; i++)
-        {
-            if (i != nearestToAvgPos)
-            {
-                localPos[i] = selectedSoldiers[nearestToAvgPos].transform.InverseTransformDirection(selectedSoldiers[i].transform.position);
-            }
-            else
-            {
-                localPos[i] = Vector3.zero;
-            }
-        }
+        //for (int i = 0; i < numSoldiers; i++)
+        //{
+        //    if (i != nearestToAvgPos)
+        //    {
+        //        localPos[i] = selectedSoldiers[nearestToAvgPos].transform.InverseTransformDirection(selectedSoldiers[i].transform.position);
+        //    }
+        //    else
+        //    {
+        //        localPos[i] = Vector3.zero;
+        //    }
+        //}
         Soldier centralSoldier=selectedSoldiers[nearestToAvgPos];
-        SortPerDistFromCenter(localPos,localPos[nearestToAvgPos]);
-
+        //SortPerDistFromCenter(localPos,localPos[nearestToAvgPos]);
+        SortPerDistFromCenter(posArr, posArr[nearestToAvgPos]);
         int centralSoldierIndex=0;
         for (int i = 0; i < numSoldiers; i++)
         {
@@ -169,16 +174,23 @@ public class InputResolver : MonoBehaviour {
             }
         }
         groupMoveDests[0] = dest;
-
+        Vector3 vecToDist = dest - centralSoldier.transform.position;
+        Vector3 normal;
         for (int i = 1; i < numSoldiers; i++)
         {
             if(i%2==0)
             {
-                groupMoveDests[i] = new Vector3(-dest.z, dest.y, dest.x) * formationGap * i / 2;
+                normal = new Vector3(-vecToDist.z, vecToDist.y, vecToDist.x).normalized;
+                //groupMoveDests[i] = new Vector3(-vecToDist.z, vecToDist.y, vecToDist.x) * formationGap * i / 2;
+                groupMoveDests[i] = dest+normal * formationGap * i / 2;
+                //Debug.Log("i: " + i + " gap: " + formationGap * i / 2);
             }
             else
             {
-                groupMoveDests[i] = new Vector3(dest.z, dest.y, -dest.x) * formationGap * (i - i / 2);
+                normal = new Vector3(vecToDist.z, vecToDist.y, -vecToDist.x).normalized;
+                //groupMoveDests[i] = new Vector3(vecToDist.z, vecToDist.y, -vecToDist.x) * formationGap * (i - i / 2);
+                groupMoveDests[i] = dest+normal * formationGap * (i-i / 2);
+                //Debug.Log("i: " + i + " gap: " + formationGap * (i - i / 2));
             }
         }
         
