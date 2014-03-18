@@ -1,8 +1,34 @@
 fileFormatVersion: 2
-guid: fdf8fd39c228bc24f98e49b08d5c2d79
+guid: 2d01dfdfbd0d56f4ea029df05e5c9f3a
 ModelImporter:
   serializedVersion: 16
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    100000: Armature
+    100002: Armature_001
+    100004: Body
+    100006: Body_MeshPart0
+    100008: Body_MeshPart1
+    100010: Bone
+    100012: //RootNode
+    100014: eggs
+    400000: Armature
+    400002: Armature_001
+    400004: Body
+    400006: Body_MeshPart0
+    400008: Body_MeshPart1
+    400010: Bone
+    400012: //RootNode
+    400014: eggs
+    4300000: Body_MeshPart0
+    4300002: Body_MeshPart1
+    4300004: eggs
+    7400000: Default Take
+    7400002: Action
+    7400004: Action_001
+    9500000: //RootNode
+    13700000: Body_MeshPart0
+    13700002: Body_MeshPart1
+    13700004: eggs
   materials:
     importMaterials: 1
     materialName: 0
