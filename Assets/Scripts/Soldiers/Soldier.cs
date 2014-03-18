@@ -70,7 +70,8 @@ public class Soldier : Observer {
                     //moveDirection = transform.TransformDirection(moveDirection);
                     moveDirection = transform.forward * moveSpeed;
                     controller.SimpleMove(moveDirection);
-                    DrawLine(destination, Color.blue);
+                    Debug.Log("move");
+                    DrawLine(destination, Color.cyan);
                     animation.CrossFade("run");
                 }
                 else
@@ -199,6 +200,7 @@ public class Soldier : Observer {
     void DrawLine(Vector3 destination, Color colour)
     {
         line.enabled = true;
+        Debug.Log(colour.ToString());
         line.SetColors(colour, colour);
         line.SetPosition(1, transform.position);
         line.SetPosition(0, destination);

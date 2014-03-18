@@ -65,10 +65,22 @@ public class InputResolver : MonoBehaviour {
             case InputResponse.Move:
                 if (CalculateMoveDestination(out destination))
                 {
-                    foreach (Soldier soldier in selectedSoldiers)
+                    if (selectedSoldiers.Count > 1)
                     {
-                        soldier.SetMove(new Vector3(destination.x, soldier.transform.position.y, destination.z));
+                        groupMoveDest = CalculateGroupMove(destination);
+                        for (int i = 0; i < selectedSoldiers.Count; i++)
+                        {
+                            selectedSoldiers[i].SetMove(new Vector3(groupMoveDest[i].x, selectedSoldiers[i].transform.position.y, groupMoveDest[i].z));
+                        }
+
                     }
+                    else
+                        selectedSoldiers[0].SetMove(new Vector3(destination.x, selectedSoldiers[0].transform.position.y, destination.z));
+
+                    //foreach (Soldier soldier in selectedSoldiers)
+                    //{
+                    //    soldier.SetMove(new Vector3(destination.x, soldier.transform.position.y, destination.z));
+                    //}
                 }
                 break;
             case InputResponse.ViewUp:
@@ -137,7 +149,7 @@ public class InputResolver : MonoBehaviour {
         Vector3[] posArr = new Vector3[numSoldiers];
         Vector3[] groupMoveDests = new Vector3[numSoldiers];
         Vector3[] localPos = new Vector3[numSoldiers];
-        float formationGap=1.5f;
+        float formationGap=2.0f;
 
         for (int i = 0; i < numSoldiers; i++)
         {
