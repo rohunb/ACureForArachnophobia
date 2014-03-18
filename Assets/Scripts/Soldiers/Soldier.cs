@@ -58,11 +58,25 @@ public class Soldier : Observer {
 	// Update is called once per frame
     void Update()
     {
-
+        //Debug.Log(state);
         switch (state)
         {
             case SoldierState.Moving:
                 currentWeapon.StopFiring();
+                if (Vector3.Distance(destination, transform.position) > .5f)
+                {
+                    moveDirection = (destination - transform.position).normalized;
+                    transform.rotation = Quaternion.LookRotation(moveDirection);
+                    //moveDirection = transform.TransformDirection(moveDirection);
+                    moveDirection = transform.forward * moveSpeed;
+                    controller.SimpleMove(moveDirection);
+                    DrawLine(destination, Color.blue);
+                    animation.CrossFade("run");
+                }
+                else
+                {
+                   // state = SoldierState.Guarding;
+                }
                 break;
             case SoldierState.Guarding:
                    
@@ -78,8 +92,10 @@ public class Soldier : Observer {
                 }
                 break;
             case SoldierState.AttackMove:
+                prevState = SoldierState.AttackMove;
                 if (!CheckCanAttack())
                 {
+                    currentWeapon.StopFiring();
                     if (Vector3.Distance(destination, transform.position) > .5f)
                     {
                         moveDirection = (destination - transform.position).normalized;
@@ -92,7 +108,7 @@ public class Soldier : Observer {
                     }
                     else
                     {
-                        state = SoldierState.Guarding;
+                        //state = SoldierState.Guarding;
                     }
                 }
                 else
@@ -123,11 +139,21 @@ public class Soldier : Observer {
         }
         else
         {
+            Debug.Log("state: " + state.ToString());
+            Debug.Log("prev state: " + prevState.ToString());
             state = prevState;
             return false;
         }
     }
-    public void SetDestination(Vector3 _dest)
+
+    public void SetMove(Vector3 _dest)
+    {
+
+        destination = _dest;
+        state = SoldierState.Moving;
+
+    }
+    public void SetAttackMove(Vector3 _dest)
     {
         destination = _dest;
         state = SoldierState.AttackMove;

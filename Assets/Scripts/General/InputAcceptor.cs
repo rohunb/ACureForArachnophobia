@@ -24,7 +24,12 @@ public class InputAcceptor : MonoBehaviour {
 	void Update () {
 	    if(Input.GetMouseButtonDown(1))
         {
-            inputResolver.ResolveInput(InputResolver.InputResponse.Execute);
+            inputResolver.ResolveInput(InputResolver.InputResponse.AttackMove);
+        }
+        //shift click for force move
+        if((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetMouseButtonDown(1))
+        {
+            inputResolver.ResolveInput(InputResolver.InputResponse.Move);
         }
         if(Input.GetMouseButtonDown(0))
         {

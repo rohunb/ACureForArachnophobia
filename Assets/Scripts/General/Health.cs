@@ -13,6 +13,17 @@ public class Health : MonoBehaviour {
     {
         get { return alive; }
     }
+
+    DroneBehavior drone;
+    BoxCollider col;
+    void Awake()
+    {
+        if (gameObject.tag == "Enemy")
+        {
+            drone = gameObject.GetComponent<DroneBehavior>();
+            col = gameObject.GetComponent<BoxCollider>();
+        }
+    }
     void Start()
     {
         health = maxHealth;
@@ -34,11 +45,21 @@ public class Health : MonoBehaviour {
     {
         //death
         alive = false;
-        if(Random.value>0.5f)
-            animation.CrossFade("death1");
-        else
-            animation.CrossFade("death2");
-        BoxCollider col = gameObject.GetComponent<BoxCollider>();
+        if (gameObject.tag == "Enemy")
+        {
+            if (Random.value > 0.5f)
+                animation.CrossFade("death1");
+            else
+                animation.CrossFade("death2");
+            drone.enabled = false;
+            rigidbody.velocity = Vector3.zero;
+            rigidbody.angularVelocity = Vector3.zero;
+            Invoke("Kill", 1.0f);
+            
+        }
+    }
+    void Kill()
+    {
         col.enabled = false;
         Destroy(gameObject, 1.0f);
     }
