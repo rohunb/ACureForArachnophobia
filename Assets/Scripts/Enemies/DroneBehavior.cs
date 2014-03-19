@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class DroneBehavior : MonoBehaviour {
+public class DroneBehavior : Enemy {
 
 
     

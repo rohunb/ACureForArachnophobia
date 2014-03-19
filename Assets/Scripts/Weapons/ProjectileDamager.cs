@@ -15,6 +15,7 @@ public class ProjectileDamager : MonoBehaviour {
                 case "Soldier":
                     if (other.tag == "Enemy" || other.tag == "EnemyStructure")
                     {
+                        
                         //Instantiate(explosion, transform.position, Quaternion.identity);
                         other.GetComponent<Health>().UpdateHealth(-damage);
                         Destroy(gameObject);

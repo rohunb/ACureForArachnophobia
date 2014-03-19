@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class SwarmSpawner : MonoBehaviour {
+public class SwarmSpawner : Enemy {
 
     public int droneCount = 50;
 	public float spawnRadius = 100f;
@@ -79,9 +79,9 @@ public class SwarmSpawner : MonoBehaviour {
         GUILayout.EndVertical();
         GUILayout.EndArea();
     }
-	protected virtual void OnDrawGizmosSelected()
-	{
-		Gizmos.DrawWireCube(transform.position, new Vector3(swarmBounds.x, 0f, swarmBounds.y));
-		Gizmos.DrawWireSphere(transform.position, spawnRadius);
-	}
+    //protected virtual void OnDrawGizmosSelected()
+    //{
+    //    Gizmos.DrawWireCube(transform.position, new Vector3(swarmBounds.x, 0f, swarmBounds.y));
+    //    Gizmos.DrawWireSphere(transform.position, spawnRadius);
+    //}
 }

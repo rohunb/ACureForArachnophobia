@@ -23,10 +23,19 @@ public class Soldier : Observer {
     LineRenderer line;
     Color lineColour = Color.blue;
 
-    KDTree dronesInSightTree;
+    
     SoldierSight sight;
     public List<DroneBehavior> dronesInSight;
     Vector3[] dronesInSightPosArr;
+    KDTree dronesInSightTree;
+
+    public List<SwarmSpawner> structsInSight;
+    Vector3[] structsInSightPosArr;
+    KDTree structsInSightTree;
+
+    public List<Enemy> enemiesInSight;
+    Vector3[] enemiesInSightPosArr;
+    KDTree enemiesInSightTree;
 
     enum SoldierState { Moving, Guarding, AttackMove, Attacking}
     SoldierState state;
@@ -70,7 +79,6 @@ public class Soldier : Observer {
                     //moveDirection = transform.TransformDirection(moveDirection);
                     moveDirection = transform.forward * moveSpeed;
                     controller.SimpleMove(moveDirection);
-                    Debug.Log("move");
                     DrawLine(destination, Color.cyan);
                     animation.CrossFade("run");
                 }
@@ -130,7 +138,8 @@ public class Soldier : Observer {
     }
     bool CheckCanAttack()
     {
-        if (dronesInSight.Count > 0)
+        //if (dronesInSight.Count > 0 || structsInSight.Count>0)
+        if(enemiesInSight.Count>0)
         {
             state = SoldierState.Attacking;
             //Debug.Log("state: " + state.ToString());
@@ -140,8 +149,8 @@ public class Soldier : Observer {
         }
         else
         {
-            Debug.Log("state: " + state.ToString());
-            Debug.Log("prev state: " + prevState.ToString());
+            //Debug.Log("state: " + state.ToString());
+            //Debug.Log("prev state: " + prevState.ToString());
             state = prevState;
             return false;
         }
@@ -163,9 +172,35 @@ public class Soldier : Observer {
     void Attack()
     {
         line.enabled = true;
-        DroneBehavior target = NearestDrone();
-        //line.SetPosition(0, transform.position);
-        //line.SetPosition(1, new Vector3(target.transform.position.x, transform.position.y,target.transform.position.z));
+        //DroneBehavior droneTarget=null;
+        //SwarmSpawner structTarget=null;
+
+        //float distToDrone=1000f;
+        //float distToStruct=1000f;
+        //if (dronesInSight.Count > 0)
+        //{
+        //    droneTarget = NearestDrone();
+        //    distToDrone = Vector3.Distance(droneTarget.transform.position, transform.position);
+        //}
+        //if (structsInSight.Count > 0)
+        //{
+        //    structTarget = NearestStruct();
+        //    distToStruct = Vector3.Distance(structTarget.transform.position, transform.position);
+        //}
+        ////line.SetPosition(0, transform.position);
+        ////line.SetPosition(1, new Vector3(target.transform.position.x, transform.position.y,target.transform.position.z));
+
+        //if(distToDrone<distToStruct)
+        //{
+        //    AimWeaponAt(droneTarget.transform);
+        //}
+        //else
+        //{
+        //    AimWeaponAt(structTarget.transform);
+
+        //}
+
+        Enemy target = NearestEnemy();
         AimWeaponAt(target.transform);
         animation.CrossFade("attack");
         currentWeapon.Fire(gameObject);
@@ -180,9 +215,31 @@ public class Soldier : Observer {
         //Debug.Log("Drone count: " + drones.Count);
         dronesInSight = drones;
         if(drones.Count>0)
-            UpdateKDTree();
+            UpdateDroneKDTree();
     }
-    void UpdateKDTree()
+    public override void UpdateStructsInSight(List<SwarmSpawner> structs)
+    {
+        structsInSight = structs;
+        if (structs.Count > 0)
+            UpdateStructsKDTree();
+
+    }
+    public override void UpdateEnemiesInSight(List<Enemy> enemies)
+    {
+        enemiesInSight = enemies;
+        if (enemies.Count > 0)
+            UpdateEnemyKDTree();
+    }
+    void UpdateEnemyKDTree()
+    {
+        enemiesInSightPosArr = new Vector3[enemiesInSight.Count];
+        for (int i = 0; i < enemiesInSightPosArr.Length; i++)
+        {
+            enemiesInSightPosArr[i] = enemiesInSight[i].transform.position;
+        }
+        enemiesInSightTree = KDTree.MakeFromPoints(enemiesInSightPosArr);
+    }
+    void UpdateDroneKDTree()
     {
         dronesInSightPosArr = new Vector3[dronesInSight.Count];
         for (int i = 0; i < dronesInSightPosArr.Length; i++)
@@ -191,16 +248,44 @@ public class Soldier : Observer {
         }
         dronesInSightTree = KDTree.MakeFromPoints(dronesInSightPosArr);
     }
+    void UpdateStructsKDTree()
+    {
+        structsInSightPosArr = new Vector3[structsInSight.Count];
+        for (int i = 0; i < structsInSightPosArr.Length; i++)
+        {
+            structsInSightPosArr[i] = structsInSight[i].transform.position;
+        }
+        structsInSightTree = KDTree.MakeFromPoints(structsInSightPosArr);
+    }
+    Enemy NearestEnemy()
+    {
+        int nearest = enemiesInSightTree.FindNearest(transform.position);
+        return enemiesInSight[nearest];
+    }
     DroneBehavior NearestDrone()
     {
-        int nearest = dronesInSightTree.FindNearest(transform.position);
-        return dronesInSight[nearest];
+        if (dronesInSight.Count > 0)
+        {
+            int nearest = dronesInSightTree.FindNearest(transform.position);
+            return dronesInSight[nearest];
+        }
+        else
+            return null;
     }
-
+    SwarmSpawner NearestStruct()
+    {
+        if (structsInSight.Count > 0)
+        {
+            int nearest = structsInSightTree.FindNearest(transform.position);
+            return structsInSight[nearest];
+        }
+        else
+            return null;
+    }
     void DrawLine(Vector3 destination, Color colour)
     {
         line.enabled = true;
-        Debug.Log(colour.ToString());
+        //Debug.Log(colour.ToString());
         line.SetColors(colour, colour);
         line.SetPosition(1, transform.position);
         line.SetPosition(0, destination);

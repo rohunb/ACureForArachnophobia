@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Health : MonoBehaviour {
+public class Health : MonoBehaviour
+{
 
     public int maxHealth;
 
@@ -15,14 +16,37 @@ public class Health : MonoBehaviour {
     }
 
     DroneBehavior drone;
-    BoxCollider col;
+    BoxCollider boxCol;
+
+    SwarmSpawner spawner;
+    SphereCollider sphereCol;
+
     void Awake()
     {
-        if (gameObject.tag == "Enemy")
+        switch (tag)
         {
-            drone = gameObject.GetComponent<DroneBehavior>();
-            col = gameObject.GetComponent<BoxCollider>();
+            case "Enemy":
+                drone = gameObject.GetComponent<DroneBehavior>();
+                boxCol = gameObject.GetComponent<BoxCollider>();
+                break;
+            case "EnemyStructure":
+                spawner = gameObject.GetComponent<SwarmSpawner>();
+                boxCol = GetComponent<BoxCollider>();
+                break;
+            default:
+                break;
         }
+
+        //if (gameObject.tag == "Enemy")
+        //{
+        //    drone = gameObject.GetComponent<DroneBehavior>();
+        //    boxCol = gameObject.GetComponent<BoxCollider>();
+        //}
+        //if(gameObject.tag=="EnemyStructure")
+        //{
+        //    spawner = gameObject.GetComponent<SwarmSpawner>();
+        //    sphereCol = GetComponent<SphereCollider>();
+        //}
     }
     void Start()
     {
@@ -45,22 +69,56 @@ public class Health : MonoBehaviour {
     {
         //death
         alive = false;
-        if (gameObject.tag == "Enemy")
+        switch (tag)
         {
-            if (Random.value > 0.5f)
-                animation.CrossFade("death1");
-            else
-                animation.CrossFade("death2");
-            drone.enabled = false;
-            rigidbody.velocity = Vector3.zero;
-            rigidbody.angularVelocity = Vector3.zero;
-            Invoke("Kill", 1.0f);
-            
+            case "Enemy":
+                if (Random.value > 0.5f)
+                    animation.CrossFade("death1");
+                else
+                    animation.CrossFade("death2");
+                drone.enabled = false;
+                rigidbody.velocity = Vector3.zero;
+                rigidbody.angularVelocity = Vector3.zero;
+                Invoke("Kill", 1.0f);
+                break;
+            case "EnemyStructure":
+                spawner.enabled = false;
+                Invoke("Kill", 0.0f);
+                break;
+            default:
+                break;
         }
+        //if (gameObject.tag == "Enemy")
+        //{
+        //    if (Random.value > 0.5f)
+        //        animation.CrossFade("death1");
+        //    else
+        //        animation.CrossFade("death2");
+        //    drone.enabled = false;
+        //    rigidbody.velocity = Vector3.zero;
+        //    rigidbody.angularVelocity = Vector3.zero;
+        //    Invoke("Kill", 1.0f);
+        //}
+        //if(gameObject.tag=="EnemyStructure")
+        //{
+
+        //}
     }
     void Kill()
     {
-        col.enabled = false;
-        Destroy(gameObject, 1.0f);
+        switch (tag)
+        {
+            case "Enemy":
+                boxCol.enabled = false;
+                Destroy(gameObject, 1.0f); 
+                break;
+            case "EnemyStructure":
+                boxCol.enabled = false;
+                Destroy(gameObject, 2.0f); 
+                break;
+            default:
+                break;
+        }
+
     }
 }
