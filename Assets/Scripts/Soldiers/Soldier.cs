@@ -102,9 +102,11 @@ public class Soldier : Observer {
                 break;
             case SoldierState.AttackMove:
                 prevState = SoldierState.AttackMove;
+                DrawLine(destination, Color.red);
                 if (!CheckCanAttack())
                 {
                     currentWeapon.StopFiring();
+
                     if (Vector3.Distance(destination, transform.position) > .5f)
                     {
                         moveDirection = (destination - transform.position).normalized;
@@ -112,7 +114,7 @@ public class Soldier : Observer {
                         //moveDirection = transform.TransformDirection(moveDirection);
                         moveDirection = transform.forward * moveSpeed;
                         controller.SimpleMove(moveDirection);
-                        DrawLine(destination, Color.red);
+                        
                         animation.CrossFade("run");
                     }
                     else
