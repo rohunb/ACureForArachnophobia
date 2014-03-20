@@ -106,7 +106,6 @@ public class Soldier : Observer {
                 if (!CheckCanAttack())
                 {
                     currentWeapon.StopFiring();
-
                     if (Vector3.Distance(destination, transform.position) > .5f)
                     {
                         moveDirection = (destination - transform.position).normalized;
