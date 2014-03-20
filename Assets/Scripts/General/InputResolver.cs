@@ -10,7 +10,7 @@ public class InputResolver : MonoBehaviour {
     public int enemyBuildingsLayer;
     public int GUILayer;
     public GameObject posMarker;
-    public enum InputResponse { Select, DragSelect, AttackMove,Move, ViewUp, ViewDown, ViewLeft,ViewRight,Zoom,Cancel,BuildMenu,BuildUnit,BuildTank}
+    public enum InputResponse { Select, DragSelect, AttackMove,Move, ViewUp, ViewDown, ViewLeft,ViewRight,Zoom,Cancel,BuildMenu,WeaponMenu}
 
     public List<Soldier> selectedSoldiers;
     
@@ -99,10 +99,7 @@ public class InputResolver : MonoBehaviour {
                 break;
             case InputResponse.BuildMenu:
                 break;
-            case InputResponse.BuildUnit:
-                break;
-            case InputResponse.BuildTank:
-                break;
+            
             default:
                 break;
         }

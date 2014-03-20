@@ -203,7 +203,7 @@ public class Soldier : Observer {
         //}
 
         Enemy target = NearestEnemy();
-        AimWeaponAt(target.transform);
+        if(target) AimWeaponAt(target.transform);
         animation.CrossFade("attack");
         currentWeapon.Fire(gameObject);
 

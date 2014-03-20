@@ -15,8 +15,16 @@ public class SwarmSpawner : Enemy {
 
     public Transform destination;
 
-    bool canSpawn = true;
-    
+    bool spawnTimerUp = true;
+    public bool canSpawn = true;
+
+
+    EnemyController enemyController;
+
+    void Awake()
+    {
+        enemyController = GameObject.FindObjectOfType<EnemyController>();
+    }
 
 	protected virtual void Start () {
 		if (prefab == null)
@@ -52,6 +60,7 @@ public class SwarmSpawner : Enemy {
         GameObject droneTemp;
         droneTemp = (GameObject)GameObject.Instantiate(prefab);
         DroneBehavior db = droneTemp.GetComponent<DroneBehavior>();
+        droneTemp.GetComponent<Health>().Attach(enemyController);
         db.drones = this.drones;
         db.swarm = this;
         db.destination = destination;
@@ -59,26 +68,26 @@ public class SwarmSpawner : Enemy {
         droneTemp.transform.position = new Vector3(pos.x, transform.position.y, pos.y);
         droneTemp.transform.parent = transform;
         drones.Add(droneTemp);
-
+        Notify();
         yield return new WaitForSeconds(spawnTimer);
-        canSpawn = true;
+        spawnTimerUp = true;
     }
 	// Update is called once per frame
 	protected virtual void Update () {
-        if (canSpawn && drones.Count<droneCount)
+        if (spawnTimerUp && canSpawn)//drones.Count<droneCount)
         {
             StartCoroutine("SpawnDrone");
-            canSpawn = false;
+            spawnTimerUp = false;
         }
 	}
-    void OnGUI()
+    public override void Notify()
     {
-        GUILayout.BeginArea(new Rect(10, 10, 150, 150));
-        GUILayout.BeginVertical();
-        GUILayout.Label("Num Spiders: " + drones.Count);
-        GUILayout.EndVertical();
-        GUILayout.EndArea();
+        foreach (Observer obs in observers)
+        {
+            obs.UpdateNumEnemies(1);
+        }
     }
+    
     //protected virtual void OnDrawGizmosSelected()
     //{
     //    Gizmos.DrawWireCube(transform.position, new Vector3(swarmBounds.x, 0f, swarmBounds.y));

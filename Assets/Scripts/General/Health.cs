@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Health : MonoBehaviour
+public class Health : Subject
 {
 
     public int maxHealth;
@@ -21,6 +21,8 @@ public class Health : MonoBehaviour
     SwarmSpawner spawner;
     SphereCollider sphereCol;
 
+    EnemyController enemyController;
+
     void Awake()
     {
         switch (tag)
@@ -37,16 +39,6 @@ public class Health : MonoBehaviour
                 break;
         }
 
-        //if (gameObject.tag == "Enemy")
-        //{
-        //    drone = gameObject.GetComponent<DroneBehavior>();
-        //    boxCol = gameObject.GetComponent<BoxCollider>();
-        //}
-        //if(gameObject.tag=="EnemyStructure")
-        //{
-        //    spawner = gameObject.GetComponent<SwarmSpawner>();
-        //    sphereCol = GetComponent<SphereCollider>();
-        //}
     }
     void Start()
     {
@@ -72,6 +64,7 @@ public class Health : MonoBehaviour
         switch (tag)
         {
             case "Enemy":
+                Notify();
                 if (Random.value > 0.5f)
                     animation.CrossFade("death1");
                 else
@@ -88,21 +81,13 @@ public class Health : MonoBehaviour
             default:
                 break;
         }
-        //if (gameObject.tag == "Enemy")
-        //{
-        //    if (Random.value > 0.5f)
-        //        animation.CrossFade("death1");
-        //    else
-        //        animation.CrossFade("death2");
-        //    drone.enabled = false;
-        //    rigidbody.velocity = Vector3.zero;
-        //    rigidbody.angularVelocity = Vector3.zero;
-        //    Invoke("Kill", 1.0f);
-        //}
-        //if(gameObject.tag=="EnemyStructure")
-        //{
-
-        //}
+    }
+    public override void Notify()
+    {
+        foreach (Observer obs in observers)
+        {
+            obs.UpdateNumEnemies(-1);
+        }
     }
     void Kill()
     {

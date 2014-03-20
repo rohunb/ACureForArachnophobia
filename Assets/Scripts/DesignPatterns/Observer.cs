@@ -12,4 +12,5 @@ public abstract class Observer: MonoBehaviour
     
     
     virtual public void UpdateEnemiesInSight(List<Enemy> enemies) { }
+    virtual public void UpdateNumEnemies(int num) { }
 }
