@@ -65,6 +65,7 @@ public class Health : Subject
         {
             case "Enemy":
                 Notify();
+                drone.swarm.drones.Remove(drone.gameObject);
                 if (Random.value > 0.5f)
                     animation.CrossFade("death1");
                 else
@@ -75,11 +76,36 @@ public class Health : Subject
                 Invoke("Kill", 1.0f);
                 break;
             case "EnemyStructure":
+                NotifyDead();
                 spawner.enabled = false;
                 Invoke("Kill", 0.0f);
                 break;
             default:
                 break;
+        }
+    }
+    void Kill()
+    {
+        switch (tag)
+        {
+            case "Enemy":
+                boxCol.enabled = false;
+                Destroy(gameObject, 1.0f);
+                break;
+            case "EnemyStructure":
+                boxCol.enabled = false;
+                Destroy(gameObject, 2.0f);
+                break;
+            default:
+                break;
+        }
+
+    }
+    public void NotifyDead()
+    {
+        foreach (Observer obs in observers)
+        {
+            obs.UpdateSpawnerDeath(spawner);
         }
     }
     public override void Notify()
@@ -89,21 +115,5 @@ public class Health : Subject
             obs.UpdateNumEnemies(-1);
         }
     }
-    void Kill()
-    {
-        switch (tag)
-        {
-            case "Enemy":
-                boxCol.enabled = false;
-                Destroy(gameObject, 1.0f); 
-                break;
-            case "EnemyStructure":
-                boxCol.enabled = false;
-                Destroy(gameObject, 2.0f); 
-                break;
-            default:
-                break;
-        }
-
-    }
+    
 }

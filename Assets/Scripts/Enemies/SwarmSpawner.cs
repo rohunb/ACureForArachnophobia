@@ -10,20 +10,23 @@ public class SwarmSpawner : Enemy {
     public List<GameObject> drones;
 
 	public Vector2 swarmBounds = new Vector2(300f, 300f);
+    public float droneSightRange = 30f;
 
 	public GameObject prefab;
 
-    public Transform destination;
+    public Transform target;
+    public Soldier nearestSoldier;
 
     bool spawnTimerUp = true;
     public bool canSpawn = true;
 
-
     EnemyController enemyController;
-
+    LineRenderer line;
+    
     void Awake()
     {
         enemyController = GameObject.FindObjectOfType<EnemyController>();
+        line = GetComponent<LineRenderer>();
     }
 
 	protected virtual void Start () {
@@ -63,7 +66,7 @@ public class SwarmSpawner : Enemy {
         droneTemp.GetComponent<Health>().Attach(enemyController);
         db.drones = this.drones;
         db.swarm = this;
-        db.destination = destination;
+        db.destination = target;
         Vector2 pos = new Vector2(transform.position.x, transform.position.z) + Random.insideUnitCircle * spawnRadius;
         droneTemp.transform.position = new Vector3(pos.x, transform.position.y, pos.y);
         droneTemp.transform.parent = transform;
@@ -79,7 +82,31 @@ public class SwarmSpawner : Enemy {
             StartCoroutine("SpawnDrone");
             spawnTimerUp = false;
         }
+        if (nearestSoldier)
+        {
+            line.SetPosition(0, transform.position);
+            line.SetPosition(1, nearestSoldier.transform.position);
+        }
 	}
+
+    public void UpdateDronesTarget(Transform _target)
+    {
+        target = _target;
+        foreach (GameObject drone in drones)
+        {
+            DroneBehavior db=drone.GetComponent<DroneBehavior>();
+            db.destination = _target;
+            if(Vector3.Distance(_target.position,transform.position)<droneSightRange)
+            {
+                db.moveToWeight = 1f;
+            }
+            else
+            {
+                db.moveToWeight = 0f;
+            }
+        }
+    }
+
     public override void Notify()
     {
         foreach (Observer obs in observers)
@@ -87,10 +114,10 @@ public class SwarmSpawner : Enemy {
             obs.UpdateNumEnemies(1);
         }
     }
-    
-    //protected virtual void OnDrawGizmosSelected()
-    //{
-    //    Gizmos.DrawWireCube(transform.position, new Vector3(swarmBounds.x, 0f, swarmBounds.y));
-    //    Gizmos.DrawWireSphere(transform.position, spawnRadius);
-    //}
+
+    protected virtual void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireCube(transform.position, new Vector3(swarmBounds.x, 0f, swarmBounds.y));
+        Gizmos.DrawWireSphere(transform.position, spawnRadius);
+    }
 }

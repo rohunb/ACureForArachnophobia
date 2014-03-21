@@ -36,21 +36,23 @@ public class DroneBehavior : Enemy {
 	public SwarmSpawner swarm;
 
     public Transform destination;
-
+    
 	void FixedUpdate()
 	{
 		// we should always apply physics forces in FixedUpdate
 		Flock();
+        if(rigidbody.velocity.magnitude>0f)
+            transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.LookRotation(rigidbody.velocity.normalized),maxSpeed/5);
 	}
 
 	protected virtual void Start()
 	{
-
+        moveToWeight = 0f;
 	}
 
 	protected virtual void Update()
 	{
-
+        
 	}
 
 	public virtual void Flock()
@@ -72,6 +74,7 @@ public class DroneBehavior : Enemy {
 		newVelocity.y = 0f;
 
 		rigidbody.velocity = Limit(newVelocity, maxSpeed);
+        
 	}
 
 	/// <summary>

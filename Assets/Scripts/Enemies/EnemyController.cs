@@ -7,20 +7,39 @@ public class EnemyController : Observer {
     public int maxDrones;
     int numDrones = 0;
     bool canSpawnMoreDrones = false;
-    SwarmSpawner[] spawners;
+    List<SwarmSpawner> spawners;
+    KDTree soldierPosTree;
+    SoldierManager soldierManager;
 
 	// Use this for initialization
     void Awake()
     {
-        spawners = GameObject.FindObjectsOfType<SwarmSpawner>();
-    }
-	void Start () {
+        SwarmSpawner[] spawnersArr=GameObject.FindObjectsOfType<SwarmSpawner>();
+        spawners = new List<SwarmSpawner>(spawnersArr);
+        soldierManager = GameObject.FindObjectOfType<SoldierManager>();
         foreach (SwarmSpawner spawner in spawners)
         {
             spawner.Attach(this);
+            spawner.GetComponent<Health>().Attach(this);
         }
+    }
+	void Start () {
+        
 	}
-	
+    public override void UpdateSoldierPos(Vector3[] soldierPos)
+    {
+        soldierPosTree = KDTree.MakeFromPoints(soldierPos);
+        foreach (SwarmSpawner spawner in spawners)
+        {
+            int nearestIndex=soldierPosTree.FindNearest(spawner.transform.position);
+            Soldier nearest=soldierManager.soldiers[nearestIndex];
+            if(spawner.nearestSoldier != nearest)
+            {
+                spawner.UpdateDronesTarget(nearest.transform);
+            }
+        }
+    }
+    
     public override void UpdateNumEnemies(int num)
     {
         numDrones+=num;
@@ -29,6 +48,10 @@ public class EnemyController : Observer {
         else
             canSpawnMoreDrones = true;
         NotifySpawnersToSpawn();
+    }
+    public override void UpdateSpawnerDeath(SwarmSpawner spawner) 
+    {
+        spawners.Remove(spawner);
     }
     void NotifySpawnersToSpawn()
     {
