@@ -11,6 +11,8 @@ public class SwarmSpawner : Enemy {
 
 	public Vector2 swarmBounds = new Vector2(300f, 300f);
     public float droneSightRange = 30f;
+    public float abandonTargetRange = 50f;
+    bool soldierInSight = false;
 
 	public GameObject prefab;
 
@@ -60,8 +62,8 @@ public class SwarmSpawner : Enemy {
 	}
     IEnumerator SpawnDrone()
     {
-        GameObject droneTemp;
-        droneTemp = (GameObject)GameObject.Instantiate(prefab);
+        GameObject droneTemp = ObjectPool.instance.GetObjectForType("SpiderDrone", false);
+        //droneTemp = (GameObject)GameObject.Instantiate(prefab);
         DroneBehavior db = droneTemp.GetComponent<DroneBehavior>();
         droneTemp.GetComponent<Health>().Attach(enemyController);
         db.drones = this.drones;
@@ -82,11 +84,7 @@ public class SwarmSpawner : Enemy {
             StartCoroutine("SpawnDrone");
             spawnTimerUp = false;
         }
-        if (nearestSoldier)
-        {
-            line.SetPosition(0, transform.position);
-            line.SetPosition(1, nearestSoldier.transform.position);
-        }
+        
 	}
 
     public void UpdateDronesTarget(Transform _target)
@@ -96,14 +94,21 @@ public class SwarmSpawner : Enemy {
         {
             DroneBehavior db=drone.GetComponent<DroneBehavior>();
             db.destination = _target;
-            if(Vector3.Distance(_target.position,transform.position)<droneSightRange)
+            
+            float distToTarget=Vector3.Distance(_target.position,transform.position);
+            if(distToTarget<droneSightRange)
             {
+                soldierInSight = true;
+            }
+            if(soldierInSight && distToTarget>abandonTargetRange)
+            {
+                soldierInSight = false;
+            }
+
+            if (soldierInSight)
                 db.moveToWeight = 1f;
-            }
             else
-            {
                 db.moveToWeight = 0f;
-            }
         }
     }
 

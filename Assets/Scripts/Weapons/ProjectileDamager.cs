@@ -5,7 +5,11 @@ public class ProjectileDamager : MonoBehaviour {
 
     public int damage;
     public GameObject origin;
-
+    public void Init(GameObject _origin, int _damage)
+    {
+        damage = _damage;
+        origin = _origin;
+    }
     public void OnTriggerEnter(Collider other)
     {
         if (origin)
@@ -18,7 +22,10 @@ public class ProjectileDamager : MonoBehaviour {
                         
                         //Instantiate(explosion, transform.position, Quaternion.identity);
                         other.GetComponent<Health>().UpdateHealth(-damage);
-                        Destroy(gameObject);
+                        rigidbody.velocity = Vector3.zero;
+                        rigidbody.angularVelocity = Vector3.zero;
+                        ObjectPool.instance.PoolObject(gameObject);
+                        //Destroy(gameObject);
                     }
                     break;
                 //case "EnemyShip":

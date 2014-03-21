@@ -11,6 +11,7 @@ public class DroneBehavior : Enemy {
 	public float speed = 10f;
 	// max speed any particular drone can move at
 	public float maxSpeed = 20f;
+    public float turnSpeed = 200f;
 	// maximum steering power
 	public float maxSteer = .05f;
 
@@ -41,8 +42,8 @@ public class DroneBehavior : Enemy {
 	{
 		// we should always apply physics forces in FixedUpdate
 		Flock();
-        if(rigidbody.velocity.magnitude>0f)
-            transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.LookRotation(rigidbody.velocity.normalized),maxSpeed/5);
+        if(rigidbody.velocity.magnitude>0f && rigidbody.velocity.normalized!=Vector3.zero)
+            transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.LookRotation(rigidbody.velocity.normalized),Time.deltaTime*turnSpeed);
 	}
 
 	protected virtual void Start()

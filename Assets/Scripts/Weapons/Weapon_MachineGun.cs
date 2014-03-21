@@ -22,14 +22,20 @@ public class Weapon_MachineGun : Weapon {
         {
             muzzleFlash.gameObject.SetActive(true);
             muzzleFlash.AnimateMuzzleFlash();
-            GameObject bulletClone = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation) as GameObject;
-            ProjectileDamager damager = bulletClone.GetComponent<ProjectileDamager>();
-            damager.origin = origin;
-            damager.damage = damage;
+            //GameObject bulletClone = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation) as GameObject;
+            GameObject bulletClone = ObjectPool.instance.GetObjectForType("InstantBullet", false);
+            bulletClone.transform.position = shootPoint.position;
+            bulletClone.transform.rotation = shootPoint.rotation;
+            //ProjectileDamager damager = bulletClone.GetComponent<ProjectileDamager>();
+            //damager.origin = origin;
+            //damager.damage = damage;
+            bulletClone.GetComponent<ProjectileDamager>().Init(origin, damage);
+            bulletClone.GetComponent<ProjectileMover>().Init(shootPoint.position, projectileSpeed, range);
+            //ProjectileMover mover = bulletClone.GetComponent<ProjectileMover>();
+            //mover.speed = projectileSpeed;
+            //mover.range = range;
+            //mover.originPos = shootPoint.position;
 
-            ProjectileMover mover = bulletClone.GetComponent<ProjectileMover>();
-            mover.speed = projectileSpeed;
-            mover.range = range;
 
             currentTimer = 0f;
         }

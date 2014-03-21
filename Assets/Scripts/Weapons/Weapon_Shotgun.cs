@@ -26,16 +26,23 @@ public class Weapon_Shotgun : Weapon {
             muzzleFlash.AnimateMuzzleFlash();
             for (int i = 0; i < numShots; i++)
             {
-                GameObject bulletClone = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation) as GameObject;
+                //GameObject bulletClone = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation) as GameObject;
+                GameObject bulletClone = ObjectPool.instance.GetObjectForType("InstantBullet", false);
+                bulletClone.transform.position = shootPoint.position;
+                bulletClone.transform.rotation = shootPoint.rotation;
+
                 bulletClone.transform.Rotate(transform.up, Random.Range(-shotSpread, shotSpread));
+                bulletClone.GetComponent<ProjectileDamager>().Init(origin, damage);
+                bulletClone.GetComponent<ProjectileMover>().Init(shootPoint.position, projectileSpeed, range);
 
-                ProjectileDamager damager = bulletClone.GetComponent<ProjectileDamager>();
-                damager.origin = origin;
-                damager.damage = damage;
+                //ProjectileDamager damager = bulletClone.GetComponent<ProjectileDamager>();
+                //damager.origin = origin;
+                //damager.damage = damage;
 
-                ProjectileMover mover = bulletClone.GetComponent<ProjectileMover>();
-                mover.speed = projectileSpeed;
-                mover.range = range;
+                //ProjectileMover mover = bulletClone.GetComponent<ProjectileMover>();
+                //mover.originPos = shootPoint.position;
+                //mover.speed = projectileSpeed;
+                //mover.range = range;
             }
             
 

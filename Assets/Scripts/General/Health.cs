@@ -90,7 +90,8 @@ public class Health : Subject
         {
             case "Enemy":
                 boxCol.enabled = false;
-                Destroy(gameObject, 1.0f);
+                Invoke("ReturnToPool", 1.0f);
+                //Destroy(gameObject, 1.0f);
                 break;
             case "EnemyStructure":
                 boxCol.enabled = false;
@@ -114,6 +115,12 @@ public class Health : Subject
         {
             obs.UpdateNumEnemies(-1);
         }
+    }
+    void ReturnToPool()
+    {
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+        ObjectPool.instance.PoolObject(gameObject);
     }
     
 }
