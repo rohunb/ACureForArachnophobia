@@ -5,12 +5,12 @@ public class ProjectileDamager : MonoBehaviour {
 
     public int damage;
     public GameObject origin;
-    public void Init(GameObject _origin, int _damage)
+    public virtual void Init(GameObject _origin, int _damage)
     {
         damage = _damage;
         origin = _origin;
     }
-    public void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (origin)
         {

@@ -43,6 +43,11 @@ public class EnemyController : Observer {
     public override void UpdateNumEnemies(int num)
     {
         numDrones+=num;
+        //numDrones = 0;
+        //for (int i = 0; i < spawners.Count; i++)
+        //{
+        //    numDrones += spawners[i].drones.Count;
+        //}
         if (numDrones >= maxDrones)
             canSpawnMoreDrones = false;
         else
@@ -51,6 +56,7 @@ public class EnemyController : Observer {
     }
     public override void UpdateSpawnerDeath(SwarmSpawner spawner) 
     {
+
         spawners.Remove(spawner);
     }
     void NotifySpawnersToSpawn()
@@ -67,5 +73,11 @@ public class EnemyController : Observer {
         GUILayout.Label("Num Spiders: " + numDrones);
         GUILayout.EndVertical();
         GUILayout.EndArea();
+
+        for (int i = 0; i < spawners.Count; i++)
+        {
+            GUI.Label(new Rect(10, 110 + i * 20, 200, 30), "Num spiders in Spawner: " + i+": "+spawners[i].drones.Count);
+        }
+
     }
 }

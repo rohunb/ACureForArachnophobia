@@ -14,14 +14,12 @@ public class Soldier : Observer {
 
     public bool selected;
 
-    Weapon_Lasers weapon;
-    
     bool movingToDest;
     Vector3 moveDirection;
     CharacterController controller;
     Projector selectionBox;
     LineRenderer line;
-    Color lineColour = Color.blue;
+    //Color lineColour = Color.blue;
 
     
     SoldierSight sight;
@@ -46,8 +44,7 @@ public class Soldier : Observer {
         selectionBox = GetComponentInChildren<Projector>();
         line = GetComponent<LineRenderer>();
         sight = soldierSight.GetComponent<SoldierSight>();
-        sight.sightRange = sightRange;
-
+        sight.sightRange = currentWeapon.range;
     }
 	// Use this for initialization
 	void Start () {
@@ -57,7 +54,6 @@ public class Soldier : Observer {
         prevState = state;
         selected = false;
         line.enabled = false;
-        
         //testing weapons
         //currentWeapon = weapon;
         
@@ -236,7 +232,8 @@ public class Soldier : Observer {
         enemiesInSightPosArr = new Vector3[enemiesInSight.Count];
         for (int i = 0; i < enemiesInSightPosArr.Length; i++)
         {
-            enemiesInSightPosArr[i] = enemiesInSight[i].transform.position;
+            //if (enemiesInSight[i])
+                enemiesInSightPosArr[i] = enemiesInSight[i].transform.position;
         }
         enemiesInSightTree = KDTree.MakeFromPoints(enemiesInSightPosArr);
     }

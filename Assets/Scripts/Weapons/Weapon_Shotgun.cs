@@ -9,9 +9,10 @@ public class Weapon_Shotgun : Weapon {
     {
         muzzleFlash = GetComponentInChildren<MuzzleFlash>();
     }
-    void Start()
+    protected override void Start()
     {
         muzzleFlash.gameObject.SetActive(false);
+        base.Start();
     }
     void Update()
     {

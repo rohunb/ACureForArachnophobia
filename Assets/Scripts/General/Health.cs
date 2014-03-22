@@ -6,6 +6,7 @@ public class Health : Subject
 
     public int maxHealth;
 
+    [SerializeField]
     private int health;
 
     private bool alive;
@@ -90,11 +91,18 @@ public class Health : Subject
         {
             case "Enemy":
                 boxCol.enabled = false;
-                Invoke("ReturnToPool", 1.0f);
-                //Destroy(gameObject, 1.0f);
+                //Invoke("ReturnToPool", 1.0f);
+                //ReturnToPool();
+                Destroy(gameObject, 1.0f);
                 break;
             case "EnemyStructure":
                 boxCol.enabled = false;
+                foreach (GameObject drone in spawner.drones.ToArray())
+                {
+                    //drone.GetComponent<Health>().ReturnToPool();
+                    drone.GetComponent<Health>().UpdateHealth(-500);
+                    
+                }
                 Destroy(gameObject, 2.0f);
                 break;
             default:

@@ -8,6 +8,7 @@ public class ProjectileMover : MonoBehaviour
     float timeToDestroy;
     public float currentTime = 0f;
     public Vector3 originPos;
+
     public void Init(Vector3 _originPos, float _speed, float _range)
     {
         speed = _speed;
@@ -32,7 +33,7 @@ public class ProjectileMover : MonoBehaviour
         //    ReturnToPool();
         //}
         //currentTime += Time.deltaTime;
-        if(Vector3.Distance(transform.position,originPos)>range)
+        if(Vector3.Distance(transform.position,originPos)>range+1)
         {
             ReturnToPool();
         }

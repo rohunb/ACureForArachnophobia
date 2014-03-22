@@ -23,12 +23,12 @@ public class SwarmSpawner : Enemy {
     public bool canSpawn = true;
 
     EnemyController enemyController;
-    LineRenderer line;
+    //LineRenderer line;
     
     void Awake()
     {
         enemyController = GameObject.FindObjectOfType<EnemyController>();
-        line = GetComponent<LineRenderer>();
+      //  line = GetComponent<LineRenderer>();
     }
 
 	protected virtual void Start () {
@@ -40,7 +40,6 @@ public class SwarmSpawner : Enemy {
 		}
 
 		// instantiate the drones
-		GameObject droneTemp;
 		drones = new List<GameObject>();
 
         
@@ -62,8 +61,8 @@ public class SwarmSpawner : Enemy {
 	}
     IEnumerator SpawnDrone()
     {
-        GameObject droneTemp = ObjectPool.instance.GetObjectForType("SpiderDrone", false);
-        //droneTemp = (GameObject)GameObject.Instantiate(prefab);
+        //GameObject droneTemp = ObjectPool.instance.GetObjectForType("SpiderDrone", false);
+        GameObject droneTemp = (GameObject)GameObject.Instantiate(prefab);
         DroneBehavior db = droneTemp.GetComponent<DroneBehavior>();
         droneTemp.GetComponent<Health>().Attach(enemyController);
         db.drones = this.drones;
@@ -125,4 +124,5 @@ public class SwarmSpawner : Enemy {
         Gizmos.DrawWireCube(transform.position, new Vector3(swarmBounds.x, 0f, swarmBounds.y));
         Gizmos.DrawWireSphere(transform.position, spawnRadius);
     }
+    
 }

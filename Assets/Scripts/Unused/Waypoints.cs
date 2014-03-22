@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Waypoints : MonoBehaviour {
 
-	int index = 10;
-    float scale = 50.0f;
+	//int index = 10;
+    //float scale = 50.0f;
 public Transform[] wayPoints;
 KDTree tree;
 public Transform targetPoint;

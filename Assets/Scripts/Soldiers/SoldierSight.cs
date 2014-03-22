@@ -28,12 +28,15 @@ public class SoldierSight : Subject {
         //foreach (DroneBehavior drone in dronesInSight)
         foreach(Enemy enemy in enemiesInSight)
         {
-            Health health_script = enemy.gameObject.GetComponent<Health>();
-            if(health_script && !health_script.Alive)
+            if (enemy)
             {
-                enemiesInSight.Remove(enemy);
-                Notify();
-                break;
+                Health health_script = enemy.gameObject.GetComponent<Health>();
+                if (health_script && !health_script.Alive)
+                {
+                    enemiesInSight.Remove(enemy);
+                    Notify();
+                    break;
+                }
             }
         }
     }

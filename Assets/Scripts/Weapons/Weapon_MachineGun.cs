@@ -7,9 +7,10 @@ public class Weapon_MachineGun : Weapon {
 	void Awake () {
         muzzleFlash = GetComponentInChildren<MuzzleFlash>();
 	}
-	void Start()
+    protected override void Start()
     {
         muzzleFlash.gameObject.SetActive(false);
+        base.Start();
     }
 	// Update is called once per frame
 	void Update () {

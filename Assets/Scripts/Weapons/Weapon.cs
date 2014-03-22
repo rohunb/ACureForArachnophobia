@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Weapon : MonoBehaviour {
 
-    public string name;
+    public string wpnName;
     public int damage;
     public GameObject projectilePrefab;
     public float projectileSpeed;
@@ -12,14 +12,15 @@ public class Weapon : MonoBehaviour {
     public GameObject origin;
     public float range;
     protected bool canFire=true;
-    public float currentTimer = 0f;
+    public float currentTimer;
     public int cost;
 
 	// Use this for initialization
-    //protected virtual void Start () {
-    //    canFire = true;
+    protected virtual void Start()
+    {
+        currentTimer = reloadTimer;
 
-    //}
+    }
 	public virtual void Fire(GameObject origin)
     {
         

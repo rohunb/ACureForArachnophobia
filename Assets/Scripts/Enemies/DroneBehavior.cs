@@ -144,7 +144,7 @@ public class DroneBehavior : Enemy {
             //move to
             if(Vector3.Distance(destination.position,swarm.transform.position)>4f)
             {
-                Vector3 diff = destination.position - swarm.transform.position;
+                //Vector3 diff = destination.position - swarm.transform.position;
                 moveToSum += destination.position;
                 moveToCount++;
             }

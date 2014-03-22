@@ -145,7 +145,7 @@ public class InputResolver : MonoBehaviour {
         int numSoldiers = selectedSoldiers.Count;
         Vector3[] posArr = new Vector3[numSoldiers];
         Vector3[] groupMoveDests = new Vector3[numSoldiers];
-        Vector3[] localPos = new Vector3[numSoldiers];
+        //Vector3[] localPos = new Vector3[numSoldiers];
         float formationGap=2.0f;
 
         for (int i = 0; i < numSoldiers; i++)
@@ -173,15 +173,15 @@ public class InputResolver : MonoBehaviour {
         Soldier centralSoldier=selectedSoldiers[nearestToAvgPos];
         //SortPerDistFromCenter(localPos,localPos[nearestToAvgPos]);
         SortPerDistFromCenter(posArr, posArr[nearestToAvgPos]);
-        int centralSoldierIndex=0;
-        for (int i = 0; i < numSoldiers; i++)
-        {
-            if(selectedSoldiers[i]==centralSoldier)
-            {
-                centralSoldierIndex = i;
-                break;
-            }
-        }
+        //int centralSoldierIndex=0;
+        //for (int i = 0; i < numSoldiers; i++)
+        //{
+        //    if(selectedSoldiers[i]==centralSoldier)
+        //    {
+        //        centralSoldierIndex = i;
+        //        break;
+        //    }
+        //}
         groupMoveDests[0] = dest;
         Vector3 vecToDist = dest - centralSoldier.transform.position;
         Vector3 normal;

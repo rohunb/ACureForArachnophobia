@@ -120,9 +120,9 @@ public class ObjectPool : MonoBehaviour
     }
     void OnGUI()
     {
-        for (int i = 0; i < pooledObjects.Length; i++)
-        {
-            GUI.Label(new Rect(10,70+i*20,120,30),"Num in pool: "+pooledObjects[i].Count);
-        }
+        //for (int i = 0; i < pooledObjects.Length; i++)
+        //{
+           // GUI.Label(new Rect(10,70,120,30),"Num Drones in pool: "+pooledObjects[0].Count);
+        //}
     }
 }
