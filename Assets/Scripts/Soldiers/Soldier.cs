@@ -11,6 +11,7 @@ public class Soldier : Observer {
     public GameObject soldierSight;
     public Weapon currentWeapon;
     public Transform shootPoint;
+    public GameObject defaultWpn;
 
     public bool selected;
 
@@ -44,6 +45,8 @@ public class Soldier : Observer {
         selectionBox = GetComponentInChildren<Projector>();
         line = GetComponent<LineRenderer>();
         sight = soldierSight.GetComponent<SoldierSight>();
+        GameObject wpn = Instantiate(defaultWpn) as GameObject;
+        AddWeapon(wpn);
         sight.sightRange = currentWeapon.range;
     }
 	// Use this for initialization
@@ -260,6 +263,21 @@ public class Soldier : Observer {
         int nearest = enemiesInSightTree.FindNearest(transform.position);
         return enemiesInSight[nearest];
     }
+    public void AddWeapon(GameObject _weapon)
+    {
+        _weapon.transform.parent = shootPoint;
+        _weapon.transform.localPosition = Vector3.zero;
+        _weapon.transform.localRotation = Quaternion.identity;
+        currentWeapon = _weapon.GetComponent<Weapon>();
+        currentWeapon.shootPoint = shootPoint;
+    }
+    void DrawLine(Vector3 destination, Color colour)
+    {
+        line.enabled = true;
+        line.SetColors(colour, colour);
+        line.SetPosition(1, transform.position);
+        line.SetPosition(0, destination);
+    }
     DroneBehavior NearestDrone()
     {
         if (dronesInSight.Count > 0)
@@ -280,22 +298,5 @@ public class Soldier : Observer {
         else
             return null;
     }
-    void DrawLine(Vector3 destination, Color colour)
-    {
-        line.enabled = true;
-        //Debug.Log(colour.ToString());
-        line.SetColors(colour, colour);
-        line.SetPosition(1, transform.position);
-        line.SetPosition(0, destination);
-        //float dist = Vector3.Distance(destination, transform.position);
-        //int length = Mathf.RoundToInt(dist / lengthFactor);
-        //line.SetVertexCount(length);
-        //for (int i = 0; i < length -1; i++)
-        //{
-        //    Vector3 newPos = transform.position;
-        //    newPos += transform.forward * i * lengthFactor;
-        //    line.SetPosition(i, newPos);
-        //}
-        //line.SetPosition(length-1, destination);
-    }
+  
 }

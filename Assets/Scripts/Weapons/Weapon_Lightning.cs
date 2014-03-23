@@ -66,7 +66,7 @@ public class Weapon_Lightning: Weapon {
         int i = 0;
         while (i < hits.Length)
         {
-            Debug.Log(hits.Length);
+
             RaycastHit hit = hits[i];
             if (currentTimer >= reloadTimer && (hit.transform.tag == "Enemy" || hit.transform.tag == "EnemyStructure"))
             {

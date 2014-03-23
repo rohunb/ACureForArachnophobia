@@ -5,11 +5,11 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{7BCC06A9-EAFF-B6DA-653D-3C2E6EC8CD38}</ProjectGuid>
+	<ProjectGuid>{98B9A8AA-BACF-9E1F-2ED5-6461006E51C4}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
-	<AssemblyName>Assembly-UnityScript</AssemblyName>
+	<AssemblyName>Assembly-UnityScript-firstpass</AssemblyName>
 	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 	<FileAlignment>512</FileAlignment>
 	<BaseDirectory>Assets</BaseDirectory>
@@ -46,11 +46,11 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Sci-Fi UI\Demo_Assets\GUI_Demo.js" />
-     <Compile Include="Assets\Sci-Fi UI\Demo_Assets\TouchButton_Demo.js" />
-     <Compile Include="Assets\Sci-Fi UI\Demo_Assets\touchJoystick\Joystick.js" />
+     <Compile Include="Assets\Plugins\Sci-Fi UI\Demo_Assets\GUI_Demo.js" />
+     <Compile Include="Assets\Plugins\Sci-Fi UI\Demo_Assets\TouchButton_Demo.js" />
+     <Compile Include="Assets\Plugins\Sci-Fi UI\Demo_Assets\touchJoystick\Joystick.js" />
      <None Include="Assets\Shaders\Fx\Additive.shader" />
-     <None Include="Assets\Sample Assets\Effects\Projectors\Shaders\Projector Additive.shader" />
+     <None Include="Assets\Plugins\Sample Assets\Effects\Projectors\Shaders\Projector Additive.shader" />
      <None Include="Assets\Plugins\iTween\ReadMe!\ReadMe!.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
