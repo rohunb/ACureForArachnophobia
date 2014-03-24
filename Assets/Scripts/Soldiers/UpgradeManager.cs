@@ -36,9 +36,11 @@ public class UpgradeManager : MonoBehaviour {
     public Camera guiCam;
     public int guiLayer = 10;
 
+    InputResolver inputResolver;
+
     void Awake()
     {
-
+        inputResolver = GameObject.FindGameObjectWithTag("GameController").GetComponent<InputResolver>();
     }
     // Use this for initialization
 	void Start () {
@@ -63,18 +65,18 @@ public class UpgradeManager : MonoBehaviour {
             case MenuState.Open:
                 if (Input.GetKeyDown(KeyCode.Escape))
                     menuState = MenuState.Closing;
-                //ActivateOpenWeaponsMenu();
+                CheckButtonHotkey();
                 break;
             case MenuState.Opening:
                 if (Input.GetKeyDown(KeyCode.Escape))
                     menuState = MenuState.Closing;
                 AnimateWindowOpening();
                 AnimateWeaponsOpening();
+                CheckButtonHotkey();
                 break;
             case MenuState.Closed:
                 if (Input.GetKeyDown(KeyCode.V))
                     menuState = MenuState.Opening;
-                //ActivateClosedWeaponsMenu();
                 break;
             case MenuState.Closing:
                 if (Input.GetKeyDown(KeyCode.V))
@@ -103,16 +105,16 @@ public class UpgradeManager : MonoBehaviour {
                         menuState = MenuState.Opening;
                         break;
                     case "MP5Button":
-                        Debug.Log("mp5");
+                        EquipWeapon("MP5");
                         break;
                     case "ShotgunButton":
-                        Debug.Log("shot");
+                        EquipWeapon("Shotgun");
                         break;
                     case "LightningButton":
-                        Debug.Log("light");
+                        EquipWeapon("Lightning");
                         break;
                     case "FlameButton":
-                        Debug.Log("flem");
+                        EquipWeapon("Flamethrower");
                         break;
                     case "CloseButton":
                         Debug.Log("Close");
@@ -124,7 +126,41 @@ public class UpgradeManager : MonoBehaviour {
             }
         }
     }
+    void CheckButtonHotkey()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+            EquipWeapon("MP5");
 
+        if (Input.GetKeyDown(KeyCode.E))
+            EquipWeapon("Shotgun");
+
+        if (Input.GetKeyDown(KeyCode.G))
+            EquipWeapon("Lightning");
+
+        if (Input.GetKeyDown(KeyCode.F))
+            EquipWeapon("Flamethrower");
+    }
+    void EquipWeapon(string wpnName)
+    {
+        switch (wpnName)
+        {
+            case "MP5":
+                inputResolver.EquipWeapon(Instantiate(MP5) as GameObject);
+                break;
+            case "Shotgun":
+                inputResolver.EquipWeapon(Instantiate(shotgun) as GameObject);
+                break;
+            case "Lightning":
+                inputResolver.EquipWeapon(Instantiate(lightningGun) as GameObject);
+                break;
+            case "Flamethrower":
+                inputResolver.EquipWeapon(Instantiate(flamethrower) as GameObject);
+                break;
+
+            default:
+                break;
+        }
+    }
     void AnimateWeaponsOpening()
     {
         currentButtonPos[0].x = Mathf.Lerp(currentButtonPos[0].x, hiddenPosition.x, Time.deltaTime * menuAnimationSpeed);

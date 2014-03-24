@@ -56,6 +56,6 @@ public class SoldierManager : Subject {
             obs.UpdateSoldierPos(prevSoldierPos.ToArray());
         }
     }
-
+    
     
 }

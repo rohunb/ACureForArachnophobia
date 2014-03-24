@@ -46,7 +46,7 @@ public class Soldier : Observer {
         line = GetComponent<LineRenderer>();
         sight = soldierSight.GetComponent<SoldierSight>();
         GameObject wpn = Instantiate(defaultWpn) as GameObject;
-        AddWeapon(wpn);
+        EquipWeapon(wpn);
         sight.sightRange = currentWeapon.range;
     }
 	// Use this for initialization
@@ -263,11 +263,12 @@ public class Soldier : Observer {
         int nearest = enemiesInSightTree.FindNearest(transform.position);
         return enemiesInSight[nearest];
     }
-    public void AddWeapon(GameObject _weapon)
+    public void EquipWeapon(GameObject _weapon)
     {
         _weapon.transform.parent = shootPoint;
-        _weapon.transform.localPosition = Vector3.zero;
-        _weapon.transform.localRotation = Quaternion.identity;
+        _weapon.transform.position = Vector3.zero;
+        _weapon.transform.rotation = Quaternion.identity;
+        //Destroy(currentWeapon.gameObject);
         currentWeapon = _weapon.GetComponent<Weapon>();
         currentWeapon.shootPoint = shootPoint;
     }

@@ -6,7 +6,7 @@ public class Weapon_Lightning: Weapon {
     LineRenderer line;
     public float lineNoise = 1f;
     int length;
-    bool firing=true;
+    bool firing=false;
     int enemiesLayer = 11;
 
     void Awake()

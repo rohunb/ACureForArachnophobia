@@ -125,6 +125,14 @@ public class InputResolver : MonoBehaviour {
     {
         cameraMover.Zoom(zoomAmount);
     }
+    public void EquipWeapon(GameObject _weapon)
+    {
+        for (int i = 0; i < selectedSoldiers.Count; i++)
+        {
+            Debug.Log(i);
+            selectedSoldiers[i].EquipWeapon(_weapon);
+        }
+    }
     void CalculateSelectOrder()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
