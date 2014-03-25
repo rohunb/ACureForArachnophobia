@@ -37,6 +37,7 @@ public class UpgradeManager : MonoBehaviour {
     public int guiLayer = 10;
 
     InputResolver inputResolver;
+    int credits = 400;
 
     void Awake()
     {
@@ -88,7 +89,7 @@ public class UpgradeManager : MonoBehaviour {
                 break;
         }
         DrawWeaponsWindow();
-        DrawWeaponButtons();   
+        DrawWeaponButtons();
 
 	}
     void CheckButtonSelect()
@@ -259,6 +260,16 @@ public class UpgradeManager : MonoBehaviour {
         shotgunButton.SetActive(true);
         lightningButton.SetActive(true);
         flameButton.SetActive(true);
+    }
+    public bool CreateTransaction(int amount)
+    {
+        if (credits + amount >= 0)
+        {
+            credits += amount;
+            return true;
+        }
+        else
+            return false;
     }
 }
 

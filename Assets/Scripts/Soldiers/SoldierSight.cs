@@ -40,6 +40,11 @@ public class SoldierSight : Subject {
             }
         }
     }
+    public void UpdateSight(float range)
+    {
+        sightRange = range;
+        col.radius = sightRange;
+    }
     //public void Notify(NotifyFlag flag)
     //{
     //    switch (flag)

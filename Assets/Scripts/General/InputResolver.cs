@@ -17,11 +17,13 @@ public class InputResolver : MonoBehaviour {
     //scripts that we need for input handing
     private SoldierManager soldierController;
     private CameraMover cameraMover;
+    UpgradeManager upgradeManager;
     
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         soldierController = gameObject.GetComponent<SoldierManager>();
         cameraMover = Camera.main.GetComponent<CameraMover>();
+        upgradeManager = GameObject.FindObjectOfType<UpgradeManager>().GetComponent<UpgradeManager>();
 	}
 	
 	// Update is called once per frame
@@ -129,9 +131,16 @@ public class InputResolver : MonoBehaviour {
     {
         for (int i = 0; i < selectedSoldiers.Count; i++)
         {
-            Debug.Log(i);
-            selectedSoldiers[i].EquipWeapon(_weapon);
+            Weapon weapon = _weapon.GetComponent(typeof(Weapon)) as Weapon;
+            if (weapon.wpnName != selectedSoldiers[i].currentWeapon.wpnName)
+            {
+                if (upgradeManager.CreateTransaction(-weapon.cost))
+                    selectedSoldiers[i].EquipWeapon(Instantiate(_weapon) as GameObject);
+                else
+                    Debug.Log("not enough credits");
+            }
         }
+        Destroy(_weapon);
     }
     void CalculateSelectOrder()
     {

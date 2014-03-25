@@ -45,9 +45,6 @@ public class Soldier : Observer {
         selectionBox = GetComponentInChildren<Projector>();
         line = GetComponent<LineRenderer>();
         sight = soldierSight.GetComponent<SoldierSight>();
-        GameObject wpn = Instantiate(defaultWpn) as GameObject;
-        EquipWeapon(wpn);
-        sight.sightRange = currentWeapon.range;
     }
 	// Use this for initialization
 	void Start () {
@@ -57,6 +54,10 @@ public class Soldier : Observer {
         prevState = state;
         selected = false;
         line.enabled = false;
+
+        GameObject wpn = Instantiate(defaultWpn) as GameObject;
+        EquipWeapon(wpn);
+        sight.UpdateSight(currentWeapon.range);
         //testing weapons
         //currentWeapon = weapon;
         
@@ -265,12 +266,14 @@ public class Soldier : Observer {
     }
     public void EquipWeapon(GameObject _weapon)
     {
+        //Destroy(gameObject.GetComponentInChildren<Weapon>().gameObject);
         _weapon.transform.parent = shootPoint;
         _weapon.transform.position = Vector3.zero;
         _weapon.transform.rotation = Quaternion.identity;
-        //Destroy(currentWeapon.gameObject);
+        
         currentWeapon = _weapon.GetComponent<Weapon>();
         currentWeapon.shootPoint = shootPoint;
+        sight.UpdateSight(currentWeapon.range);
     }
     void DrawLine(Vector3 destination, Color colour)
     {
