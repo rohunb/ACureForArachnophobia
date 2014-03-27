@@ -20,12 +20,11 @@ public class SoldierManager : Subject {
             soldiers[i].soldierSight.GetComponent<SoldierSight>().Attach(soldiers[i]);
             prevSoldierPos.Add(soldiers[i].transform.position);
         }
-        Notify();
                
 	}
 	void Start()
     {
-        
+        Notify();
     }
 	// Update is called once per frame
 	void Update () {
@@ -51,8 +50,11 @@ public class SoldierManager : Subject {
     }
     public override void Notify()
     {
+        Debug.Log(observers.Count);
+
         foreach (Observer obs in observers)
         {
+            
             obs.UpdateSoldierPos(prevSoldierPos.ToArray());
         }
     }

@@ -37,7 +37,7 @@ public class UpgradeManager : MonoBehaviour {
     public int guiLayer = 10;
 
     InputResolver inputResolver;
-    int credits = 400;
+    int credits = 4000;
 
     void Awake()
     {
@@ -270,6 +270,12 @@ public class UpgradeManager : MonoBehaviour {
         }
         else
             return false;
+    }
+    public bool CheckIfGuiCick(Vector3 mousePos)
+    {
+        Ray ray = guiCam.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        return (Physics.Raycast(ray, out hit, 100f, 1 << 10));
     }
 }
 

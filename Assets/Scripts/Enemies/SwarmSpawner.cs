@@ -41,7 +41,7 @@ public class SwarmSpawner : Enemy {
 
 		// instantiate the drones
 		drones = new List<GameObject>();
-
+        //target = nearestSoldier.transform;
         
         //for (int i = 0; i < droneCount; i++)
         //{

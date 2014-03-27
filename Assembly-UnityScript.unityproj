@@ -46,12 +46,12 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Sci-Fi UI\Demo_Assets\GUI_Demo.js" />
-     <Compile Include="Assets\Sci-Fi UI\Demo_Assets\TouchButton_Demo.js" />
-     <Compile Include="Assets\Sci-Fi UI\Demo_Assets\touchJoystick\Joystick.js" />
+     <Compile Include="Assets\Packages\Sci-Fi UI\Demo_Assets\GUI_Demo.js" />
+     <Compile Include="Assets\Packages\Sci-Fi UI\Demo_Assets\TouchButton_Demo.js" />
+     <Compile Include="Assets\Packages\Sci-Fi UI\Demo_Assets\touchJoystick\Joystick.js" />
      <None Include="Assets\Shaders\Fx\Additive.shader" />
-     <None Include="Assets\Sample Assets\Effects\Projectors\Shaders\Projector Additive.shader" />
-     <None Include="Assets\Plugins\iTween\ReadMe!\ReadMe!.txt" />
+     <None Include="Assets\Packages\Sample Assets\Effects\Projectors\Shaders\Projector Additive.shader" />
+     <None Include="Assets\Packages\iTween\ReadMe!\ReadMe!.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

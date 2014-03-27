@@ -38,11 +38,15 @@ public class InputResolver : MonoBehaviour {
         switch (response)
         {
             case InputResponse.Select:
-                if (selectedSoldiers.Count > 0)
+
+                if (!upgradeManager.CheckIfGuiCick(Input.mousePosition))
                 {
-                    Deselect();
+                    if (selectedSoldiers.Count > 0)
+                    {
+                        Deselect();
+                    }
+                    CalculateSelectOrder();
                 }
-                CalculateSelectOrder();
                 break;
             case InputResponse.AttackMove:
                 if (CalculateMoveDestination(out destination))
@@ -135,13 +139,16 @@ public class InputResolver : MonoBehaviour {
             if (weapon.wpnName != selectedSoldiers[i].currentWeapon.wpnName)
             {
                 if (upgradeManager.CreateTransaction(-weapon.cost))
-                    selectedSoldiers[i].EquipWeapon(Instantiate(_weapon) as GameObject);
+                    selectedSoldiers[i].EquipWeapon(weapon.wpnName);
                 else
                     Debug.Log("not enough credits");
             }
         }
         Destroy(_weapon);
     }
+    
+    
+
     void CalculateSelectOrder()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -224,6 +231,7 @@ public class InputResolver : MonoBehaviour {
     }
     void Deselect()
     {
+        
         foreach (Soldier soldier in selectedSoldiers)
         {
             soldier.selected = false;

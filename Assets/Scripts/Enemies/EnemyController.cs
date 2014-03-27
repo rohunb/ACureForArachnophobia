@@ -33,7 +33,7 @@ public class EnemyController : Observer {
         {
             int nearestIndex=soldierPosTree.FindNearest(spawner.transform.position);
             Soldier nearest=soldierManager.soldiers[nearestIndex];
-            if(spawner.nearestSoldier != nearest)
+            if(!spawner.nearestSoldier ||  spawner.nearestSoldier != nearest)
             {
                 spawner.UpdateDronesTarget(nearest.transform);
             }

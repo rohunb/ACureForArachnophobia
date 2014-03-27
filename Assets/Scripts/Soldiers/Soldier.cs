@@ -9,9 +9,14 @@ public class Soldier : Observer {
     public float sightRange;
     
     public GameObject soldierSight;
-    public Weapon currentWeapon;
     public Transform shootPoint;
-    public GameObject defaultWpn;
+
+    public Weapon currentWeapon;
+    public Weapon MP5;
+    public Weapon shotgun;
+    public Weapon lightningGun;
+    public Weapon flamethrower;
+
 
     public bool selected;
 
@@ -55,8 +60,8 @@ public class Soldier : Observer {
         selected = false;
         line.enabled = false;
 
-        GameObject wpn = Instantiate(defaultWpn) as GameObject;
-        EquipWeapon(wpn);
+        //GameObject wpn = Instantiate(MP5) as GameObject;
+        EquipWeapon("MP5");
         sight.UpdateSight(currentWeapon.range);
         //testing weapons
         //currentWeapon = weapon;
@@ -273,6 +278,57 @@ public class Soldier : Observer {
         
         currentWeapon = _weapon.GetComponent<Weapon>();
         currentWeapon.shootPoint = shootPoint;
+        sight.UpdateSight(currentWeapon.range);
+    }
+    public void EquipWeapon(string wpnName)
+    {
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
+        //for (int i = bullets.Length-1; i >=0; i--)
+        for (int i = 0; i < bullets.Length; i++)
+        {
+            if (bullets[i] && bullets[i].GetComponent<ProjectileDamager>().origin == gameObject)
+            {
+                bullets[i].GetComponent<ProjectileMover>().ReturnToPool();
+            }
+        }
+        switch (wpnName)
+        {
+            case "MP5":
+                MP5.gameObject.SetActive(true);
+                currentWeapon = MP5;
+                shotgun.gameObject.SetActive(false);
+                lightningGun.gameObject.SetActive(false);
+                flamethrower.gameObject.SetActive(false);
+                break;
+            case "Shotgun":
+                shotgun.gameObject.SetActive(true);
+                currentWeapon = shotgun;
+                MP5.gameObject.SetActive(false);
+                lightningGun.gameObject.SetActive(false);
+                flamethrower.gameObject.SetActive(false);
+                break;
+            case "LightningGun":
+                lightningGun.gameObject.SetActive(true);
+                currentWeapon = lightningGun;
+                MP5.gameObject.SetActive(false);
+                shotgun.gameObject.SetActive(false);
+                flamethrower.gameObject.SetActive(false);
+                break;
+            case "Flamethrower":
+                flamethrower.gameObject.SetActive(true);
+                currentWeapon = flamethrower;
+                MP5.gameObject.SetActive(false);
+                shotgun.gameObject.SetActive(false);
+                lightningGun.gameObject.SetActive(false);
+                break;
+
+            default:
+                currentWeapon = MP5;
+                shotgun.gameObject.SetActive(false);
+                lightningGun.gameObject.SetActive(false);
+                flamethrower.gameObject.SetActive(false);
+                break;
+        }
         sight.UpdateSight(currentWeapon.range);
     }
     void DrawLine(Vector3 destination, Color colour)

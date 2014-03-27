@@ -12,15 +12,14 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 
-        
-
         enemyController = GameObject.FindGameObjectWithTag("EnemyController").GetComponent<EnemyController>();
         soldierManager = GameObject.FindObjectOfType<SoldierManager>();
+        soldierManager.Attach(enemyController);
+
 	}
 	void Start()
     {
         enemyController.maxDrones = MAX_DRONES;
-        soldierManager.Attach(enemyController);
     }
 	
     void OnGUI()

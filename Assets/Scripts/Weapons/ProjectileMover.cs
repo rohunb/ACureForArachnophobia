@@ -38,7 +38,7 @@ public class ProjectileMover : MonoBehaviour
             ReturnToPool();
         }
     }
-    void ReturnToPool()
+    public void ReturnToPool()
     {
         rigidbody.velocity = Vector3.zero;
         rigidbody.angularVelocity = Vector3.zero;
