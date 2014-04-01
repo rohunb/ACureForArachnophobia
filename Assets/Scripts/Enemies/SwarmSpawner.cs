@@ -104,10 +104,7 @@ public class SwarmSpawner : Enemy {
                 soldierInSight = false;
             }
 
-            if (soldierInSight)
-                db.moveToWeight = 1f;
-            else
-                db.moveToWeight = 0f;
+            db.soldierInSight = soldierInSight;
         }
     }
 

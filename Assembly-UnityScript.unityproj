@@ -49,6 +49,8 @@
      <Compile Include="Assets\Packages\Sci-Fi UI\Demo_Assets\GUI_Demo.js" />
      <Compile Include="Assets\Packages\Sci-Fi UI\Demo_Assets\TouchButton_Demo.js" />
      <Compile Include="Assets\Packages\Sci-Fi UI\Demo_Assets\touchJoystick\Joystick.js" />
+     <Compile Include="Assets\splatterCast.js" />
+     <Compile Include="Assets\splatterCore.js" />
      <None Include="Assets\Shaders\Fx\Additive.shader" />
      <None Include="Assets\Packages\Sample Assets\Effects\Projectors\Shaders\Projector Additive.shader" />
      <None Include="Assets\Packages\iTween\ReadMe!\ReadMe!.txt" />

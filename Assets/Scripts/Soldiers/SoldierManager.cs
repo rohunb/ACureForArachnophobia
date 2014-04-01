@@ -50,11 +50,8 @@ public class SoldierManager : Subject {
     }
     public override void Notify()
     {
-        Debug.Log(observers.Count);
-
         foreach (Observer obs in observers)
         {
-            
             obs.UpdateSoldierPos(prevSoldierPos.ToArray());
         }
     }
