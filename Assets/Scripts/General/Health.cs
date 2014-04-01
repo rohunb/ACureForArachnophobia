@@ -9,6 +9,11 @@ public class Health : Subject
     [SerializeField]
     private int health;
 
+    public int GetHealth
+    {
+        get { return health; }
+    }
+
     private bool alive;
 
     public bool Alive
