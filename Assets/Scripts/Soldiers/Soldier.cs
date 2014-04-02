@@ -85,8 +85,10 @@ public class Soldier : Observer
         {
             case SoldierState.Moving:
                 if (healingWpn)
+                {
                     healingWpn.StopHealing();
-                currentWeapon.StopFiring();
+                    healingWpn.StopFiring();
+                }
                 if (Vector3.Distance(destination, transform.position) > .5f)
                 {
                     moveDirection = (destination - transform.position).normalized;
@@ -110,9 +112,15 @@ public class Soldier : Observer
                         prevState = SoldierState.Guarding;
                         break;
                     }
+                    else if(CheckCanAttack())
+                    {
+                        prevState = SoldierState.Guarding;
+                        break;
+                    }
                     else
                     {
                         healingWpn.StopHealing();
+                        healingWpn.StopFiring();
                         animation.CrossFade("idle");
                         line.enabled = false;
                     }
@@ -134,7 +142,38 @@ public class Soldier : Observer
             case SoldierState.AttackMove:
                 prevState = SoldierState.AttackMove;
                 DrawLine(destination, Color.red);
-                if (!CheckCanAttack())
+
+                if(healingWpn)
+                {
+                    if(CheckCanHeal())
+                    {
+                        prevState = SoldierState.AttackMove;
+                    }
+                    else if(CheckCanAttack())
+                    {
+                        prevState = SoldierState.AttackMove;
+                    }
+                    else
+                    {
+                        healingWpn.StopHealing();
+                        healingWpn.StopFiring();
+                        if (Vector3.Distance(destination, transform.position) > .5f)
+                        {
+                            moveDirection = (destination - transform.position).normalized;
+                            transform.rotation = Quaternion.LookRotation(moveDirection);
+                            //moveDirection = transform.TransformDirection(moveDirection);
+                            moveDirection = transform.forward * moveSpeed;
+                            controller.SimpleMove(moveDirection);
+
+                            animation.CrossFade("run");
+                        }
+                        else
+                        {
+                            state = SoldierState.Guarding;
+                        }
+                    }
+                }
+                else if (!CheckCanAttack())
                 {
                     currentWeapon.StopFiring();
                     if (Vector3.Distance(destination, transform.position) > .5f)
@@ -158,11 +197,29 @@ public class Soldier : Observer
                 }
                 break;
             case SoldierState.Attacking:
-                if (CheckCanAttack())
-                    Attack();
+                if(healingWpn && CheckCanHeal())
+                {
+                    //if(CheckCanHeal())
+                    //{
+                    //   //prevState=
+                    //}
+                    
+                }
+                else if (CheckCanAttack())
+                {
+                    if(healingWpn)
+                    {
+                        AttackHealingWpn();
+                    }
+                    else
+                    {
+                        Attack();
+                    }
+
+                }
+                    
                 break;
             case SoldierState.Healing:
-                Debug.Log("healing");
                 if (CheckCanHeal())
                 {
                     Heal();
@@ -244,7 +301,16 @@ public class Soldier : Observer
         if (target) AimWeaponAt(target.transform);
         animation.CrossFade("attack");
         currentWeapon.Fire(gameObject);
+    }
+    void AttackHealingWpn()
+    {
+        line.enabled = true;
 
+        Enemy target = NearestEnemy();
+        if (target) 
+            AimWeaponAt(target.transform);
+        animation.CrossFade("attack");
+        ((Weapon_HealingBeam)currentWeapon).Fire(target.transform);
     }
     void Heal()
     {

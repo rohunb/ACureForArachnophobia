@@ -31,20 +31,6 @@ public class Weapon_HealingBeam : Weapon {
 
     void Update()
     {
-        //if(Input.GetKey(KeyCode.H))
-        //{
-        //    Heal(transform);
-        //}
-        //else if(Input.GetKey(KeyCode.G))
-        //{
-        //    Fire(transform);
-        //}
-        //else
-        //{
-        //    StopFiring();
-        //    StopHealing();
-        //}
-
         if(healing)
         {
             HealTarget();
@@ -52,7 +38,7 @@ public class Weapon_HealingBeam : Weapon {
         }
         else if (firing)
         {
-            //CheckForCollision();
+            DamageTarget();
             CreateBeamEffect();
         }
 
@@ -67,6 +53,14 @@ public class Weapon_HealingBeam : Weapon {
         if(target && currentTimer>=healInterval)
         {
             target.gameObject.GetComponent<Health>().UpdateHealth(healAmount);
+            currentTimer = 0f;
+        }
+    }
+    void DamageTarget()
+    {
+        if(target && currentTimer>=reloadTimer)
+        {
+            target.gameObject.GetComponent<Health>().UpdateHealth(-damage);
             currentTimer = 0f;
         }
     }
@@ -93,6 +87,8 @@ public class Weapon_HealingBeam : Weapon {
     void CreateBeamEffect()
     {
         line.enabled = true;
+        length = Mathf.RoundToInt(Vector3.Distance(target.position, shootPoint.position));
+        length++;
         line.SetVertexCount(length);
         for (int i = 0; i < length; i++)
         {
@@ -105,14 +101,11 @@ public class Weapon_HealingBeam : Weapon {
             line.SetPosition(i, newPos);
             //noise += noiseIncrement;
         }
-        
+        //line.SetPosition(length - 1, target.position);
         
         //line.SetVertexCount(2);
         //line.SetPosition(0, transform.position);
         //line.SetPosition(1, target.position);
     }
-    void CheckForCollision()
-    { 
-
-    }
+    
 }
