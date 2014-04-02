@@ -144,7 +144,7 @@ public class InputResolver : MonoBehaviour {
                     Debug.Log("not enough credits");
             }
         }
-        Destroy(_weapon);
+        //Destroy(_weapon);
     }
     
     

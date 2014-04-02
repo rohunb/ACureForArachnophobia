@@ -206,7 +206,6 @@ public class DroneBehavior : Enemy
             {
                 if(currentTimer>=attackTimer*Time.deltaTime)
                 {
-                    Debug.Log("did damage: "+damage);
                     hitObj.GetComponent<Health>().UpdateHealth(-damage);
                     currentTimer = 0f;
                 }

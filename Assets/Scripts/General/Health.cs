@@ -61,6 +61,7 @@ public class Health : Subject
                 Die();
             }
             health = Mathf.Clamp(health, 0, maxHealth);
+            NotifyHealthUpdate();
         }
     }
     void Die()
@@ -114,6 +115,13 @@ public class Health : Subject
                 break;
         }
 
+    }
+    public void NotifyHealthUpdate()
+    {
+        foreach (Observer obs in observers)
+        {
+            obs.UpdateLowestHPSoldier();
+        }
     }
     public void NotifyDead()
     {

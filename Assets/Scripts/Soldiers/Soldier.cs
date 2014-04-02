@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Soldier : Observer {
+public class Soldier : Observer
+{
 
-    public float moveSpeed=10f;
+    public float moveSpeed = 10f;
     public Vector3 destination;
     public float sightRange;
-    
+
     public GameObject soldierSight;
     public Transform shootPoint;
 
@@ -16,7 +17,10 @@ public class Soldier : Observer {
     public Weapon shotgun;
     public Weapon lightningGun;
     public Weapon flamethrower;
+    public Weapon healingBeam;
 
+    Soldier lowestHPSoldier;
+    Health lowestSoldierHealth;
 
     public bool selected;
 
@@ -27,8 +31,9 @@ public class Soldier : Observer {
     LineRenderer line;
     //Color lineColour = Color.blue;
 
-    
+    SoldierManager soldierManager;
     SoldierSight sight;
+
     public List<DroneBehavior> dronesInSight;
     Vector3[] dronesInSightPosArr;
     KDTree dronesInSightTree;
@@ -41,47 +46,51 @@ public class Soldier : Observer {
     Vector3[] enemiesInSightPosArr;
     KDTree enemiesInSightTree;
 
-    enum SoldierState { Moving, Guarding, AttackMove, Attacking}
+    enum SoldierState { Moving, Guarding, AttackMove, Attacking, Healing, HealMove }
+    [SerializeField]
     SoldierState state;
     SoldierState prevState;
+
+    Vector3 prevPos;
+
     void Awake()
     {
         controller = GetComponent<CharacterController>();
         selectionBox = GetComponentInChildren<Projector>();
         line = GetComponent<LineRenderer>();
         sight = soldierSight.GetComponent<SoldierSight>();
+        soldierManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<SoldierManager>();
     }
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         destination = transform.position;
         moveDirection = Vector3.zero;
         state = SoldierState.Guarding;
         prevState = state;
         selected = false;
         line.enabled = false;
-
-        //GameObject wpn = Instantiate(MP5) as GameObject;
         EquipWeapon("MP5");
         sight.UpdateSight(currentWeapon.range);
-        //testing weapons
-        //currentWeapon = weapon;
-        
-        
-	}
-	
-	// Update is called once per frame
+        prevPos = transform.position;
+    }
     void Update()
     {
-        //Debug.Log(state);
+        Weapon_HealingBeam healingWpn = null;
+        if (currentWeapon is Weapon_HealingBeam)
+        {
+            healingWpn = (Weapon_HealingBeam)currentWeapon;
+        }
         switch (state)
         {
             case SoldierState.Moving:
+                if (healingWpn)
+                    healingWpn.StopHealing();
                 currentWeapon.StopFiring();
                 if (Vector3.Distance(destination, transform.position) > .5f)
                 {
                     moveDirection = (destination - transform.position).normalized;
                     transform.rotation = Quaternion.LookRotation(moveDirection);
-                    //moveDirection = transform.TransformDirection(moveDirection);
                     moveDirection = transform.forward * moveSpeed;
                     controller.SimpleMove(moveDirection);
                     DrawLine(destination, Color.cyan);
@@ -93,17 +102,34 @@ public class Soldier : Observer {
                 }
                 break;
             case SoldierState.Guarding:
-                   
-                if (!CheckCanAttack())
+                
+                if (healingWpn)
+                {
+                    if (CheckCanHeal())
+                    {
+                        prevState = SoldierState.Guarding;
+                        break;
+                    }
+                    else
+                    {
+                        healingWpn.StopHealing();
+                        animation.CrossFade("idle");
+                        line.enabled = false;
+                    }
+                }
+                else if (CheckCanAttack())
+                {
+                    prevState = SoldierState.Guarding;
+                    break;
+                }
+                else
                 {
                     currentWeapon.StopFiring();
                     animation.CrossFade("idle");
                     line.enabled = false;
                 }
-                else
-                {
-                    prevState = SoldierState.Guarding;
-                }
+
+
                 break;
             case SoldierState.AttackMove:
                 prevState = SoldierState.AttackMove;
@@ -118,7 +144,7 @@ public class Soldier : Observer {
                         //moveDirection = transform.TransformDirection(moveDirection);
                         moveDirection = transform.forward * moveSpeed;
                         controller.SimpleMove(moveDirection);
-                        
+
                         animation.CrossFade("run");
                     }
                     else
@@ -132,25 +158,37 @@ public class Soldier : Observer {
                 }
                 break;
             case SoldierState.Attacking:
-                if(CheckCanAttack())
+                if (CheckCanAttack())
                     Attack();
+                break;
+            case SoldierState.Healing:
+                Debug.Log("healing");
+                if (CheckCanHeal())
+                {
+                    Heal();
+                }
+                break;
+            case SoldierState.HealMove:
                 break;
             default:
                 currentWeapon.StopFiring();
                 break;
         }
-        
         selectionBox.enabled = selected;
+        //if(prevPos!=transform.position)
+        //{
+        //    soldierManager.RunInjuredSoldierCheck();
+        //}
     }
     bool CheckCanAttack()
     {
         //if (dronesInSight.Count > 0 || structsInSight.Count>0)
-        if(enemiesInSight.Count>0)
+        if (enemiesInSight.Count > 0)
         {
             state = SoldierState.Attacking;
             //Debug.Log("state: " + state.ToString());
             //Debug.Log("prev state: " + prevState.ToString());
-            
+
             return true;
         }
         else
@@ -161,7 +199,30 @@ public class Soldier : Observer {
             return false;
         }
     }
+    bool CheckCanHeal()
+    {
+        lowestHPSoldier = soldierManager.FindNearestInjuredSoldierWithinRange(this, currentWeapon.range);
+        if (lowestHPSoldier)
+        {
+            lowestSoldierHealth = lowestHPSoldier.GetComponent<Health>();
+            if (lowestSoldierHealth.GetHealth < lowestSoldierHealth.maxHealth)
+            {
+                state = SoldierState.Healing;
+                return true;
+            }
+            else
+            {
+                state = prevState;
+                return false;
+            }
+        }
+        else
+        {
+            state = prevState;
+            return false;
+        }
 
+    }
     public void SetMove(Vector3 _dest)
     {
 
@@ -178,57 +239,29 @@ public class Soldier : Observer {
     void Attack()
     {
         line.enabled = true;
-        //DroneBehavior droneTarget=null;
-        //SwarmSpawner structTarget=null;
-
-        //float distToDrone=1000f;
-        //float distToStruct=1000f;
-        //if (dronesInSight.Count > 0)
-        //{
-        //    droneTarget = NearestDrone();
-        //    distToDrone = Vector3.Distance(droneTarget.transform.position, transform.position);
-        //}
-        //if (structsInSight.Count > 0)
-        //{
-        //    structTarget = NearestStruct();
-        //    distToStruct = Vector3.Distance(structTarget.transform.position, transform.position);
-        //}
-        ////line.SetPosition(0, transform.position);
-        ////line.SetPosition(1, new Vector3(target.transform.position.x, transform.position.y,target.transform.position.z));
-
-        //if(distToDrone<distToStruct)
-        //{
-        //    AimWeaponAt(droneTarget.transform);
-        //}
-        //else
-        //{
-        //    AimWeaponAt(structTarget.transform);
-
-        //}
-
+        
         Enemy target = NearestEnemy();
-        if(target) AimWeaponAt(target.transform);
+        if (target) AimWeaponAt(target.transform);
         animation.CrossFade("attack");
         currentWeapon.Fire(gameObject);
 
+    }
+    void Heal()
+    {
+        line.enabled = true;
+        if (lowestHPSoldier)
+            AimWeaponAt(lowestHPSoldier.transform);
+        animation.CrossFade("attack");
+        ((Weapon_HealingBeam)currentWeapon).Heal(lowestHPSoldier.transform);
     }
     void AimWeaponAt(Transform target)
     {
         transform.LookAt(target);
     }
-    public override void UpdateDronesInSight(List<DroneBehavior> drones)
-    {
-        //Debug.Log("Drone count: " + drones.Count);
-        dronesInSight = drones;
-        if(drones.Count>0)
-            UpdateDroneKDTree();
-    }
-    public override void UpdateStructsInSight(List<SwarmSpawner> structs)
-    {
-        structsInSight = structs;
-        if (structs.Count > 0)
-            UpdateStructsKDTree();
 
+    public override void UpdateLowestHPSoldier()
+    {
+        lowestHPSoldier = soldierManager.FindNearestInjuredSoldierWithinRange(this, currentWeapon.range);
     }
     public override void UpdateEnemiesInSight(List<Enemy> enemies)
     {
@@ -242,7 +275,7 @@ public class Soldier : Observer {
         for (int i = 0; i < enemiesInSightPosArr.Length; i++)
         {
             //if (enemiesInSight[i])
-                enemiesInSightPosArr[i] = enemiesInSight[i].transform.position;
+            enemiesInSightPosArr[i] = enemiesInSight[i].transform.position;
         }
         enemiesInSightTree = KDTree.MakeFromPoints(enemiesInSightPosArr);
     }
@@ -269,17 +302,17 @@ public class Soldier : Observer {
         int nearest = enemiesInSightTree.FindNearest(transform.position);
         return enemiesInSight[nearest];
     }
-    public void EquipWeapon(GameObject _weapon)
-    {
-        //Destroy(gameObject.GetComponentInChildren<Weapon>().gameObject);
-        _weapon.transform.parent = shootPoint;
-        _weapon.transform.position = Vector3.zero;
-        _weapon.transform.rotation = Quaternion.identity;
-        
-        currentWeapon = _weapon.GetComponent<Weapon>();
-        currentWeapon.shootPoint = shootPoint;
-        sight.UpdateSight(currentWeapon.range);
-    }
+    //public void EquipWeapon(GameObject _weapon)
+    //{
+    //    //Destroy(gameObject.GetComponentInChildren<Weapon>().gameObject);
+    //    _weapon.transform.parent = shootPoint;
+    //    _weapon.transform.position = Vector3.zero;
+    //    _weapon.transform.rotation = Quaternion.identity;
+
+    //    currentWeapon = _weapon.GetComponent<Weapon>();
+    //    currentWeapon.shootPoint = shootPoint;
+    //    sight.UpdateSight(currentWeapon.range);
+    //}
     public void EquipWeapon(string wpnName)
     {
         GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
@@ -299,6 +332,7 @@ public class Soldier : Observer {
                 shotgun.gameObject.SetActive(false);
                 lightningGun.gameObject.SetActive(false);
                 flamethrower.gameObject.SetActive(false);
+                healingBeam.gameObject.SetActive(false);
                 break;
             case "Shotgun":
                 shotgun.gameObject.SetActive(true);
@@ -306,6 +340,7 @@ public class Soldier : Observer {
                 MP5.gameObject.SetActive(false);
                 lightningGun.gameObject.SetActive(false);
                 flamethrower.gameObject.SetActive(false);
+                healingBeam.gameObject.SetActive(false);
                 break;
             case "LightningGun":
                 lightningGun.gameObject.SetActive(true);
@@ -313,6 +348,7 @@ public class Soldier : Observer {
                 MP5.gameObject.SetActive(false);
                 shotgun.gameObject.SetActive(false);
                 flamethrower.gameObject.SetActive(false);
+                healingBeam.gameObject.SetActive(false);
                 break;
             case "Flamethrower":
                 flamethrower.gameObject.SetActive(true);
@@ -320,13 +356,23 @@ public class Soldier : Observer {
                 MP5.gameObject.SetActive(false);
                 shotgun.gameObject.SetActive(false);
                 lightningGun.gameObject.SetActive(false);
+                healingBeam.gameObject.SetActive(false);
                 break;
-
+            case "HealingBeam":
+                healingBeam.gameObject.SetActive(true);
+                currentWeapon = healingBeam;
+                MP5.gameObject.SetActive(false);
+                shotgun.gameObject.SetActive(false);
+                lightningGun.gameObject.SetActive(false);
+                flamethrower.gameObject.SetActive(false);
+                break;
             default:
+                MP5.gameObject.SetActive(true);
                 currentWeapon = MP5;
                 shotgun.gameObject.SetActive(false);
                 lightningGun.gameObject.SetActive(false);
                 flamethrower.gameObject.SetActive(false);
+                healingBeam.gameObject.SetActive(false);
                 break;
         }
         sight.UpdateSight(currentWeapon.range);
@@ -358,5 +404,19 @@ public class Soldier : Observer {
         else
             return null;
     }
-  
+    //public override void UpdateDronesInSight(List<DroneBehavior> drones)
+    //{
+    //    //Debug.Log("Drone count: " + drones.Count);
+    //    dronesInSight = drones;
+    //    if (drones.Count > 0)
+    //        UpdateDroneKDTree();
+    //}
+    //public override void UpdateStructsInSight(List<SwarmSpawner> structs)
+    //{
+    //    structsInSight = structs;
+    //    if (structs.Count > 0)
+    //        UpdateStructsKDTree();
+
+    //}
+
 }

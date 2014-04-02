@@ -15,6 +15,7 @@ public class UpgradeManager : MonoBehaviour {
     public GameObject shotgun;
     public GameObject lightningGun;
     public GameObject flamethrower;
+    public GameObject healingBeam;
 
     public Vector4 windowSizeClosed=new Vector4(-8.55f,-4.02f,2.33f,2.06f);
     private Vector4 windowSizeOpen=new Vector4(-5.50f,-4.02f,9.2f,2.06f);
@@ -140,24 +141,40 @@ public class UpgradeManager : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.F))
             EquipWeapon("Flamethrower");
+        if (Input.GetKeyDown(KeyCode.H))
+            EquipWeapon("HealingBeam");
     }
     void EquipWeapon(string wpnName)
     {
         switch (wpnName)
         {
+            //case "MP5":
+            //    inputResolver.EquipWeapon(Instantiate(MP5) as GameObject);
+            //    break;
+            //case "Shotgun":
+            //    inputResolver.EquipWeapon(Instantiate(shotgun) as GameObject);
+            //    break;
+            //case "Lightning":
+            //    inputResolver.EquipWeapon(Instantiate(lightningGun) as GameObject);
+            //    break;
+            //case "Flamethrower":
+            //    inputResolver.EquipWeapon(Instantiate(flamethrower) as GameObject);
+            //    break;
             case "MP5":
-                inputResolver.EquipWeapon(Instantiate(MP5) as GameObject);
+                inputResolver.EquipWeapon(MP5 as GameObject);
                 break;
             case "Shotgun":
-                inputResolver.EquipWeapon(Instantiate(shotgun) as GameObject);
+                inputResolver.EquipWeapon(shotgun as GameObject);
                 break;
             case "Lightning":
-                inputResolver.EquipWeapon(Instantiate(lightningGun) as GameObject);
+                inputResolver.EquipWeapon((lightningGun) as GameObject);
                 break;
             case "Flamethrower":
-                inputResolver.EquipWeapon(Instantiate(flamethrower) as GameObject);
+                inputResolver.EquipWeapon((flamethrower) as GameObject);
                 break;
-
+            case "HealingBeam":
+                inputResolver.EquipWeapon((healingBeam) as GameObject);
+                break;
             default:
                 break;
         }
