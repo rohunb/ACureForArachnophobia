@@ -11,8 +11,6 @@ public class Weapon_HealingBeam : Weapon {
     public int healAmount = 1;
     public float healInterval = 1f;
 
-    int enemiesLayer = 11;
-    int playerLayer = 9;
 
     public Color healColour = Color.green;
     public Color fireColour = Color.yellow;

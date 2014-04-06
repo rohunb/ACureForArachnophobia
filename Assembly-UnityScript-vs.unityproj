@@ -51,6 +51,7 @@
      <Compile Include="Assets\Packages\Sci-Fi UI\Demo_Assets\touchJoystick\Joystick.js" />
      <None Include="Assets\Shaders\Fx\Additive.shader" />
      <None Include="Assets\Packages\Sample Assets\Effects\Projectors\Shaders\Projector Additive.shader" />
+     <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
      <None Include="Assets\Packages\iTween\ReadMe!\ReadMe!.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

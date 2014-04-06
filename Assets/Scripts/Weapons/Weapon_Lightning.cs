@@ -44,19 +44,26 @@ public class Weapon_Lightning: Weapon {
     {
         line.enabled = true;
         line.SetVertexCount(length);
-        float noise = 0.3f;
+        float noise = 0.1f;
         float noiseIncrement = lineNoise / (float)length;
-        for (int i = 0; i < length; i++)
+        noiseIncrement *= 2f;
+        line.SetPosition(0, shootPoint.position);
+        for (int i = 1; i < length-1; i++)
         {
             Vector3 newPos = shootPoint.position;
             Vector3 offset = Vector3.zero;
             offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-noise, noise);
+            //offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-lineNoise, lineNoise);
             offset.y = newPos.y + i * shootPoint.forward.y;// +Random.Range(-lineNoise, lineNoise);
             offset.z = newPos.z + i * shootPoint.forward.z;// +Random.Range(-lineNoise, lineNoise);
             newPos = offset;
             line.SetPosition(i, newPos);
-            noise += noiseIncrement;
+            if(i>length/2)
+                noise -= noiseIncrement;
+            else
+                noise += noiseIncrement;
         }
+        line.SetPosition(length-1, shootPoint.position+shootPoint.forward*(length-1));
     }
     void CheckForCollision()
     {

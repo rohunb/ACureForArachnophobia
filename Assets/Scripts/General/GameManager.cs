@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour {
     EnemyController enemyController;
     SoldierManager soldierManager;
 
+    enum GameScene { MainMenu, Game, Pause, GameOver}
+    GameScene currentScene = GameScene.MainMenu;
+
 	// Use this for initialization
 	void Awake () {
 
@@ -21,9 +24,24 @@ public class GameManager : MonoBehaviour {
     {
         enemyController.maxDrones = MAX_DRONES;
     }
-	
+	void Update()
+    {
+        switch (currentScene)
+        {
+            case GameScene.MainMenu:
+                break;
+            case GameScene.Game:
+                break;
+            case GameScene.Pause:
+                break;
+            case GameScene.GameOver:
+                break;
+            default:
+                break;
+        }
+    }
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 50, 100, 30), "Num Bullets: " + GameObject.FindObjectsOfType<ProjectileDamager>().Length);
+
     }
 }

@@ -51,8 +51,6 @@ public class Soldier : Observer
     SoldierState state;
     SoldierState prevState;
 
-    Vector3 prevPos;
-
     void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -72,7 +70,6 @@ public class Soldier : Observer
         line.enabled = false;
         EquipWeapon("MP5");
         sight.UpdateSight(currentWeapon.range);
-        prevPos = transform.position;
     }
     void Update()
     {
@@ -91,6 +88,7 @@ public class Soldier : Observer
                 }
                 if (Vector3.Distance(destination, transform.position) > .5f)
                 {
+                    currentWeapon.StopFiring();
                     moveDirection = (destination - transform.position).normalized;
                     transform.rotation = Quaternion.LookRotation(moveDirection);
                     moveDirection = transform.forward * moveSpeed;
@@ -322,7 +320,13 @@ public class Soldier : Observer
     }
     void AimWeaponAt(Transform target)
     {
-        transform.LookAt(target);
+        //transform.LookAt(target);
+        Vector3 targetPostition = new Vector3(target.position.x, transform.position.y,target.position.z);
+        transform.LookAt(targetPostition);
+        //Quaternion lookRot = Quaternion.LookRotation(lookDir);
+        ////transform.rotation.eulerAngles.z
+        //lookRot.SetEulerAngles(0f, lookRot.eulerAngles.y,0f);
+        //transform.rotation = lookRot;
     }
 
     public override void UpdateLowestHPSoldier()

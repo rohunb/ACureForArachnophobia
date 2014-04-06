@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Health : Subject
 {
-
+    public GameObject bloodSplatterPrefab;
     public int maxHealth;
 
     [SerializeField]
@@ -58,19 +58,21 @@ public class Health : Subject
             health += amount;
             if (health <= 0)
             {
-                Die();
+                StartDying();
             }
             health = Mathf.Clamp(health, 0, maxHealth);
             NotifyHealthUpdate();
         }
     }
-    void Die()
+    void StartDying()
     {
         //death
         alive = false;
         switch (tag)
         {
             case "Enemy":
+                GameObject bloodSplatter = Instantiate(bloodSplatterPrefab, transform.position + transform.up*.5f, transform.rotation) as GameObject;
+                GameObject.Destroy(bloodSplatter, 2.0f);
                 Notify();
                 drone.swarm.drones.Remove(drone.gameObject);
                 if (Random.value > 0.5f)
