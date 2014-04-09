@@ -28,6 +28,7 @@ public class Soldier : Observer
     Vector3 moveDirection;
     CharacterController controller;
     Projector selectionBox;
+    public GameObject healthBar;
     LineRenderer line;
     //Color lineColour = Color.blue;
 
@@ -230,6 +231,7 @@ public class Soldier : Observer
                 break;
         }
         selectionBox.enabled = selected;
+        healthBar.SetActive(selected);
         //if(prevPos!=transform.position)
         //{
         //    soldierManager.RunInjuredSoldierCheck();

@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour {
         switch (currentScene)
         {
             case GameScene.MainMenu:
+
                 break;
             case GameScene.Game:
                 break;

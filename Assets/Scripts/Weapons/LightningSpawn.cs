@@ -27,13 +27,19 @@ public class LightningSpawn : MonoBehaviour {
         for (int i = 1; i < length - 1; i++)
         {
             Vector3 newPos = transform.position;
-            Vector3 offset = Vector3.zero;
-            offset.x = newPos.x + i * transform.forward.x + Random.Range(-noise, noise);
-            //offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-lineNoise, lineNoise);
-            offset.y = newPos.y + i * transform.forward.y;// +Random.Range(-lineNoise, lineNoise);
-            offset.z = newPos.z + i * transform.forward.z;// +Random.Range(-lineNoise, lineNoise);
-            newPos = offset;
+            //Vector3 offset = Vector3.zero;
+            //offset.x = newPos.x + i * transform.forward.x + Random.Range(-noise, noise);
+            ////offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-lineNoise, lineNoise);
+            //offset.y = newPos.y + i * transform.forward.y;// +Random.Range(-lineNoise, lineNoise);
+            //offset.z = newPos.z + i * transform.forward.z;// +Random.Range(-lineNoise, lineNoise);
+            //newPos = offset;
+            //line.SetPosition(i, newPos);
+
+            float offsetX = Random.Range(-noise, noise);
+            newPos += transform.right * offsetX;
+            newPos += transform.forward * i;
             line.SetPosition(i, newPos);
+
             if (i > length / 2)
                 noise -= noiseIncrement;
             else
