@@ -45,10 +45,16 @@ public class Weapon_Lightning1 : Weapon
 
     public override void Fire(GameObject origin)
     {
+        if(!firing)
+        {
+            AudioManager.Instance.PlaySound(AudioManager.Sound.LightningGun, true);
+        }
         firing = true;
     }
     public override void StopFiring()
     {
+        if (firing)
+            AudioManager.Instance.StopSound(AudioManager.Sound.LightningGun);
         firing = false;
     }
     void CreateBeamEffect()

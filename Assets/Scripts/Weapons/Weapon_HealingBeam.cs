@@ -65,11 +65,16 @@ public class Weapon_HealingBeam : Weapon {
     public void Fire(Transform _target)
     {
         target = _target;
+
+        if (!firing)
+            AudioManager.Instance.PlaySound(AudioManager.Sound.HealingBeam, true);
         firing = true;
         line.renderer.material.SetColor("_TintColor", Color.yellow);
     }
     public override void StopFiring()
     {
+        if (firing)
+            AudioManager.Instance.StopSound(AudioManager.Sound.HealingBeam);
         firing = false;
     }
     public void Heal(Transform _target)
