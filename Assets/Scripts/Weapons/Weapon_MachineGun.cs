@@ -21,6 +21,7 @@ public class Weapon_MachineGun : Weapon {
     {
         if(currentTimer>=reloadTimer)
         {
+            AudioManager.Instance.PlaySound(AudioManager.Sound.MP5, false);
             muzzleFlash.gameObject.SetActive(true);
             muzzleFlash.AnimateMuzzleFlash();
             //GameObject bulletClone = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation) as GameObject;

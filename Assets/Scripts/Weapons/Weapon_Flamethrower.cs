@@ -14,6 +14,7 @@ public class Weapon_Flamethrower : Weapon {
     {
         if(currentTimer>=reloadTimer)
         {
+            AudioManager.Instance.PlaySound(AudioManager.Sound.Flamethrower, false);
             GameObject flamesClone = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation) as GameObject;
             //GameObject flamesClone = ObjectPool.instance.GetObjectForType("Flames", false);
             //flamesClone.transform.position = shootPoint.position;

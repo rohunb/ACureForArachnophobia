@@ -23,6 +23,7 @@ public class Weapon_Shotgun : Weapon {
     {
         if (currentTimer >= reloadTimer)
         {
+            AudioManager.Instance.PlaySound(AudioManager.Sound.Shotgun, false);
             muzzleFlash.gameObject.SetActive(true);
             muzzleFlash.AnimateMuzzleFlash();
             for (int i = 0; i < numShots; i++)
