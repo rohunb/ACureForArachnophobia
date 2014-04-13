@@ -43,7 +43,6 @@ public class DroneBehavior : Enemy
     public AI_State currentState = AI_State.Swarming;
 
     public bool soldierInSight=false;
-    [SerializeField]
     float dist;
 
     public Transform attackPoint;
@@ -51,17 +50,30 @@ public class DroneBehavior : Enemy
     public int playerLayer=9;
     public float attackTimer = 19; //animation frames for attack
     public int damage = 10;
-    [SerializeField]
     float currentTimer = 0f;
+
+    public Renderer _renderer;
 
     void FixedUpdate()
     {
         // we should always apply physics forces in FixedUpdate
         //if(currentState==AI_State.Swarming || currentState==AI_State.GoingToAttack)
-        if(currentState!=AI_State.Attacking)
-            Flock();
-        if (rigidbody.velocity.magnitude > 0f && rigidbody.velocity.normalized != Vector3.zero)// && moveToWeight>0f)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(rigidbody.velocity.normalized), Time.deltaTime * turnSpeed);
+        if (_renderer.isVisible || soldierInSight)
+        {
+            if (currentState != AI_State.Attacking)
+                Flock();
+            if (rigidbody.velocity.magnitude > 0f && rigidbody.velocity.normalized != Vector3.zero)// && moveToWeight>0f)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(rigidbody.velocity.normalized), Time.deltaTime * turnSpeed);
+        }
+        else
+        {
+            rigidbody.velocity = Vector3.zero;
+            rigidbody.angularVelocity = Vector3.zero;
+        }
+        //else
+        //{
+        //    Debug.Log("not flocking");
+        //}
     }
 
     protected virtual void Start()
@@ -73,134 +85,99 @@ public class DroneBehavior : Enemy
     void Update()
     {
 
-        //bool inRange = false;
-        //float xDiff = Mathf.Abs(destination.position.x - transform.position.x);
-        //if (xDiff <= attackRange)
-        //{
-        //    float yDiff = Mathf.Abs(destination.position.y - transform.position.y);
-        //    if (yDiff <= attackRange)
-        //    {
-        //        float dist = Vector3.Distance(destination.position, transform.position);
-        //        if (dist <= attackRange)
-        //        {
-        //            inRange = true;
-
-        //        }
-        //    }
-        //}
-        if(destination)
-            dist = Vector3.Distance(destination.position, transform.position);
-
-        //if (inRange)
-        //{
-        //    separationWeight = 0f;
-        //    alignmentWeight = 0f;
-        //    cohesionWeight = 0f;
-        //    boundsWeight = 0f;
-        //    //moveToWeight = 0f;
-        //    //Debug.Log("attack");
-        //    //drones.Remove(gameObject);
-        //    if (Random.value > 0.5f)
-        //        animation.CrossFade("attack1");
-        //    else
-        //        animation.CrossFade("attack2");
-        //}
-        //else
-        //{
-        //    //separationWeight = 1f;
-        //    //alignmentWeight = 1f;
-        //    //cohesionWeight = 1f;
-        //    //boundsWeight = 1f;
-        //    //moveToWeight = 1f;
-        //    animation.CrossFade("run");
-
-        //}
-
-        switch (currentState)
+        //if (_renderer.isVisible)
         {
-            case AI_State.Swarming:
-                if (soldierInSight)
-                {
-                    currentState = AI_State.GoingToAttack;
-                }
-                separationWeight = 1f;
-                alignmentWeight = 1f;
-                cohesionWeight = 1f;
-                boundsWeight = 1f;
-                moveToWeight = 0f;
+            if (destination)
+                dist = Vector3.Distance(destination.position, transform.position);
 
 
-                break;
-            case AI_State.GoingToAttack:
-                if (dist <= attackRange)
-                {
-                    currentState = AI_State.Attacking;
-                }
-                else if (dist <= closeToTargetRange)
-                {
-                    currentState = AI_State.CloseToTarget;
-                }
-                separationWeight = 1f;
-                alignmentWeight = 1f;
-                cohesionWeight = 1f;
-                boundsWeight = 0f;
-                moveToWeight = 1f;
-                break;
-            case AI_State.CloseToTarget:
-                if(dist>closeToTargetRange)
-                {
+
+            switch (currentState)
+            {
+                case AI_State.Swarming:
                     if (soldierInSight)
-                        currentState = AI_State.GoingToAttack;
-                    else
-                        currentState = AI_State.Swarming;
-                }
-                if (dist <= attackRange)
-                {
-                    currentState = AI_State.Attacking;
-                }
-                separationWeight = .2f;
-                alignmentWeight = .2f;
-                cohesionWeight = .2f;
-                boundsWeight = 0f;
-                moveToWeight = 1f;
-                break;
-            case AI_State.Attacking:
-                if(!destination)
-                {
-                    currentState = AI_State.Swarming;
-                    break;
-                }
-                rigidbody.velocity = Vector3.zero;
-                rigidbody.angularVelocity = Vector3.zero;
-
-                if (soldierInSight)
-                {
-                    if (dist > closeToTargetRange)
                     {
                         currentState = AI_State.GoingToAttack;
                     }
-                    else if (dist > attackRange)
+                    separationWeight = 1f;
+                    alignmentWeight = 1f;
+                    cohesionWeight = 1f;
+                    boundsWeight = 1f;
+                    moveToWeight = 0f;
+
+
+                    break;
+                case AI_State.GoingToAttack:
+                    if (dist <= attackRange)
+                    {
+                        currentState = AI_State.Attacking;
+                    }
+                    else if (dist <= closeToTargetRange)
                     {
                         currentState = AI_State.CloseToTarget;
                     }
-                }
-                else
-                {
-                    currentState = AI_State.Swarming;
+                    separationWeight = 1f;
+                    alignmentWeight = 1f;
+                    cohesionWeight = 1f;
+                    boundsWeight = 0f;
+                    moveToWeight = 1f;
                     break;
-                }
-                Vector3 targetPostition = new Vector3(destination.position.x, transform.position.y, destination.position.z);
-                transform.LookAt(targetPostition);
-                Attack();
-                separationWeight = 0f;
-                alignmentWeight = 0f;
-                cohesionWeight = 0f;
-                boundsWeight = 0f;
-                moveToWeight = 0f;
+                case AI_State.CloseToTarget:
+                    if (dist > closeToTargetRange)
+                    {
+                        if (soldierInSight)
+                            currentState = AI_State.GoingToAttack;
+                        else
+                            currentState = AI_State.Swarming;
+                    }
+                    if (dist <= attackRange)
+                    {
+                        currentState = AI_State.Attacking;
+                    }
+                    separationWeight = .2f;
+                    alignmentWeight = .2f;
+                    cohesionWeight = .2f;
+                    boundsWeight = 0f;
+                    moveToWeight = 1f;
+                    break;
+                case AI_State.Attacking:
+                    if (!destination)
+                    {
+                        currentState = AI_State.Swarming;
+                        break;
+                    }
+                    rigidbody.velocity = Vector3.zero;
+                    rigidbody.angularVelocity = Vector3.zero;
 
-                break;
-            default:
-                break;
+                    if (soldierInSight)
+                    {
+                        if (dist > closeToTargetRange)
+                        {
+                            currentState = AI_State.GoingToAttack;
+                        }
+                        else if (dist > attackRange)
+                        {
+                            currentState = AI_State.CloseToTarget;
+                        }
+                    }
+                    else
+                    {
+                        currentState = AI_State.Swarming;
+                        break;
+                    }
+                    Vector3 targetPostition = new Vector3(destination.position.x, transform.position.y, destination.position.z);
+                    transform.LookAt(targetPostition);
+                    Attack();
+                    separationWeight = 0f;
+                    alignmentWeight = 0f;
+                    cohesionWeight = 0f;
+                    boundsWeight = 0f;
+                    moveToWeight = 0f;
+
+                    break;
+                default:
+                    break;
+            }
         }
         currentTimer += Time.deltaTime;
     }
@@ -303,7 +280,7 @@ public class DroneBehavior : Enemy
             // bounds
             // calculate the bounds influence vector for this drone, based on whether or not neighboring drones are in bounds
             Bounds bounds = new Bounds(swarm.transform.position, new Vector3(swarm.swarmBounds.x, 10000f, swarm.swarmBounds.y));
-            if (distance > 0 && distance < neighborRadius && !bounds.Contains(drones[i].transform.position))
+            if (distance > 0 /*&& distance < neighborRadius */&& !bounds.Contains(drones[i].transform.position))
             {
                 Vector3 diff = transform.position - swarm.transform.position;
                 if (diff.magnitude > 0)
