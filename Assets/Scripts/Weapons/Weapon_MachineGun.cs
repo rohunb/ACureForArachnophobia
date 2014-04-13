@@ -21,7 +21,7 @@ public class Weapon_MachineGun : Weapon {
     {
         if(currentTimer>=reloadTimer)
         {
-            AudioManager.Instance.PlaySound(AudioManager.Sound.MP5, false);
+            AudioManager.Instance.PlaySound(AudioManager.Sound.MP5,.4f, false);
             muzzleFlash.gameObject.SetActive(true);
             muzzleFlash.AnimateMuzzleFlash();
             //GameObject bulletClone = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation) as GameObject;
@@ -44,6 +44,7 @@ public class Weapon_MachineGun : Weapon {
     }
     public override void StopFiring()
     {
+        //AudioManager.Instance.StopSound(AudioManager.Sound.MP5);
         muzzleFlash.gameObject.SetActive(false);
     }
 }

@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
 	void Start()
     {
         enemyController.maxDrones = MAX_DRONES;
+        AudioManager.Instance.PlaySound(AudioManager.Sound.BackgroundTrack, true);
     }
 	void Update()
     {

@@ -215,6 +215,7 @@ public class DroneBehavior : Enemy
             {
                 if(currentTimer>=attackTimer*Time.deltaTime)
                 {
+                    AudioManager.Instance.PlaySound(AudioManager.Sound.SpiderAttack, false);
                     hitObj.GetComponent<Health>().UpdateHealth(-damage);
                     currentTimer = 0f;
                 }

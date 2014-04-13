@@ -63,6 +63,23 @@ public class Health : Subject
         if (alive)
         {
             health += amount;
+            if (amount < 0)
+            {
+                switch (tag)
+                {
+                    case "Enemy":
+                        AudioManager.Instance.PlaySound(AudioManager.Sound.SpiderDeath, false);
+                        break;
+                    //case "EnemyStructure":
+
+                    //    break;
+                    case "Soldier":
+                        AudioManager.Instance.PlaySound(AudioManager.Sound.SoldierHurt, false);
+                        break;
+                    default:
+                        break;
+                }
+            }
             if (health <= 0)
             {
                 StartDying();

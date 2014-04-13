@@ -100,6 +100,61 @@ public class AudioManager : MonoBehaviour
         }
 
     }
+    public void PlaySound(Sound sound, float vol, bool loop)
+    {
+        AudioClip audioClip = null;
+        switch (sound)
+        {
+            case Sound.MP5:
+                audioClip = clip_MP5;
+                break;
+            case Sound.Shotgun:
+                audioClip = clip_Shotgun;
+                break;
+            case Sound.LightningGun:
+                audioClip = clip_LightningGun;
+                break;
+            case Sound.Flamethrower:
+                audioClip = clip_Flamethrower;
+                break;
+            case Sound.HealingBeam:
+                audioClip = clip_HealingBeam;
+                break;
+            case Sound.SoldierHurt:
+                audioClip = clip_SoldierHurt;
+                break;
+            case Sound.SoldierDeath:
+                audioClip = clip_SoldierDeath;
+                break;
+            case Sound.SpiderAttack:
+                audioClip = clip_SpiderAttack;
+                break;
+            case Sound.SpiderDeath:
+                audioClip = clip_SpiderDeath;
+                break;
+            case Sound.BackgroundTrack:
+                audioClip = clip_BackgroundTrack;
+                break;
+            default:
+                break;
+        }
+        if (audioClip)
+        {
+            for (int i = 0; i < numSources; i++)
+            {
+                AudioSource source = sources[i];
+                if (!source.isPlaying)
+                {
+                    source.clip = audioClip;
+                    source.loop = loop;
+                    source.volume = vol;
+                    source.Play();
+                    return;
+                }
+            }
+        }
+
+    }
     public void StopSound(Sound sound)
     {
         AudioClip audioClip = null;
