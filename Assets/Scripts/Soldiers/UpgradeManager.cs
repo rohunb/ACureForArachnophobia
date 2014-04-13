@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class UpgradeManager : MonoBehaviour {
+public class UpgradeManager : Observer {
 
     public GameObject weaponsWindow;
     public GameObject weaponsButton;
@@ -32,6 +32,8 @@ public class UpgradeManager : MonoBehaviour {
     enum MenuState { Open, Opening, Closed, Closing }
     MenuState menuState = MenuState.Closed;
 
+    public Rect creditsLabalRect;
+
     Vector4 windowSizeCurrent;
     Vector2 closeButtonCurrentPos;
     Vector2[] currentButtonPos;
@@ -40,7 +42,9 @@ public class UpgradeManager : MonoBehaviour {
     public int guiLayer = 10;
 
     InputResolver inputResolver;
-    int credits = 4000;
+    bool displayEquips=false;
+    
+    int credits = 50;
 
     void Awake()
     {
@@ -48,6 +52,8 @@ public class UpgradeManager : MonoBehaviour {
     }
     // Use this for initialization
 	void Start () {
+
+        creditsLabalRect = new Rect(Screen.width / 17.55f, Screen.height / 1.22f, Screen.width / 9f, Screen.height / 24f);
         windowSizeCurrent = windowSizeClosed;
         closeButtonCurrentPos = closeButtonClosedPos;
         currentButtonPos = new Vector2[6];
@@ -62,7 +68,6 @@ public class UpgradeManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
         CheckButtonSelect();
         switch (menuState)
         {
@@ -70,6 +75,7 @@ public class UpgradeManager : MonoBehaviour {
                 if (Input.GetKeyDown(KeyCode.Escape))
                     menuState = MenuState.Closing;
                 CheckButtonHotkey();
+                displayEquips = true;
                 break;
             case MenuState.Opening:
                 if (Input.GetKeyDown(KeyCode.Escape))
@@ -77,16 +83,19 @@ public class UpgradeManager : MonoBehaviour {
                 AnimateWindowOpening();
                 AnimateWeaponsOpening();
                 CheckButtonHotkey();
+                displayEquips = true;
                 break;
             case MenuState.Closed:
                 if (Input.GetKeyDown(KeyCode.V))
                     menuState = MenuState.Opening;
+                displayEquips = false;
                 break;
             case MenuState.Closing:
                 if (Input.GetKeyDown(KeyCode.V))
                     menuState = MenuState.Opening;
                 AnimateWindowClosing();
                 AnimateWeaponsClosing();
+                displayEquips = false;
                 break;
             default:
                 break;
@@ -95,6 +104,7 @@ public class UpgradeManager : MonoBehaviour {
         DrawWeaponButtons();
 
 	}
+    
     void CheckButtonSelect()
     {
         Ray ray = guiCam.ScreenPointToRay(Input.mousePosition);
@@ -261,6 +271,7 @@ public class UpgradeManager : MonoBehaviour {
         if (credits + amount >= 0)
         {
             credits += amount;
+
             return true;
         }
         else
@@ -272,25 +283,22 @@ public class UpgradeManager : MonoBehaviour {
         RaycastHit hit;
         return (Physics.Raycast(ray, out hit, 100f, 1 << 10));
     }
-
-
-    //void ActivateClosedWeaponsMenu()
-    //{
-    //    weaponsButton.SetActive(true);
-    //       MP5Button.SetActive(false);
-    //shotgunButton.SetActive(false);
-    //lightningButton.SetActive(false);
-    //flameButton.SetActive(false);
-    //healingButton.SetActive(false);
-
-    //}
-    //void ActivateOpenWeaponsMenu()
-    //{
-    //    weaponsButton.SetActive(false);
-    //    MP5Button.SetActive(true);
-    //    shotgunButton.SetActive(true);
-    //    lightningButton.SetActive(true);
-    //    flameButton.SetActive(true);
-    //}
+    override public void UpdateCredits(int amount) 
+    {
+        CreateTransaction(amount);
+    }
+    void OnGUI()
+    {
+        GUI.Label(creditsLabalRect, "<color=black><size=20> Credits: " + credits + "</size></color>");
+        if (displayEquips)
+        {
+            foreach (Soldier soldier in inputResolver.selectedSoldiers)
+            {
+                Vector3 soldierPos = new Vector3(soldier.transform.position.x, 0f, soldier.transform.position.z);
+                Vector3 soldierScreenPos = Camera.main.WorldToScreenPoint(soldier.transform.position);
+                GUI.Label(new Rect(soldierScreenPos.x - 40.0f, Screen.height - soldierScreenPos.y + 20.0f, 200f, 30f), "<size=18>" + soldier.currentWeapon.wpnName + "</size>");
+            }
+        }
+    }
 }
 

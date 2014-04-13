@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
 
     EnemyController enemyController;
     SoldierManager soldierManager;
+    
 
     enum GameScene { MainMenu, Game, Pause, GameOver}
     GameScene currentScene = GameScene.MainMenu;
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour {
         enemyController = GameObject.FindGameObjectWithTag("EnemyController").GetComponent<EnemyController>();
         soldierManager = GameObject.FindObjectOfType<SoldierManager>();
         soldierManager.Attach(enemyController);
+
 
 	}
 	void Start()

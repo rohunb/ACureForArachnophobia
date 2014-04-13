@@ -10,6 +10,7 @@ public class EnemyController : Observer {
     List<SwarmSpawner> spawners;
     KDTree soldierPosTree;
     SoldierManager soldierManager;
+    UpgradeManager upgradeManager;
 
 	// Use this for initialization
     void Awake()
@@ -17,10 +18,13 @@ public class EnemyController : Observer {
         SwarmSpawner[] spawnersArr=GameObject.FindObjectsOfType<SwarmSpawner>();
         spawners = new List<SwarmSpawner>(spawnersArr);
         soldierManager = GameObject.FindObjectOfType<SoldierManager>();
+        upgradeManager = GameObject.FindObjectOfType<UpgradeManager>();
         foreach (SwarmSpawner spawner in spawners)
         {
             spawner.Attach(this);
-            spawner.GetComponent<Health>().Attach(this);
+            Health health = spawner.GetComponent<Health>();
+            health.Attach(this);
+            health.Attach(upgradeManager);
         }
     }
 	void Start () {

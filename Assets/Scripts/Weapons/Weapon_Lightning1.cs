@@ -47,7 +47,7 @@ public class Weapon_Lightning1 : Weapon
     {
         if(!firing)
         {
-            AudioManager.Instance.PlaySound(AudioManager.Sound.LightningGun, true);
+            AudioManager.Instance.PlaySound(AudioManager.Sound.LightningGun,.4f, true);
         }
         firing = true;
     }

@@ -23,11 +23,13 @@ public class SwarmSpawner : Enemy {
     public bool canSpawn = true;
 
     EnemyController enemyController;
+    UpgradeManager upgradeManager;
     //LineRenderer line;
     
     void Awake()
     {
         enemyController = GameObject.FindObjectOfType<EnemyController>();
+        upgradeManager = GameObject.FindObjectOfType<UpgradeManager>();
       //  line = GetComponent<LineRenderer>();
     }
 
@@ -64,7 +66,9 @@ public class SwarmSpawner : Enemy {
         //GameObject droneTemp = ObjectPool.instance.GetObjectForType("SpiderDrone", false);
         GameObject droneTemp = (GameObject)GameObject.Instantiate(prefab);
         DroneBehavior db = droneTemp.GetComponent<DroneBehavior>();
-        droneTemp.GetComponent<Health>().Attach(enemyController);
+        Health health = droneTemp.GetComponent<Health>();
+        health.Attach(enemyController);
+        health.Attach(upgradeManager);
         db.drones = this.drones;
         db.swarm = this;
         db.destination = target;

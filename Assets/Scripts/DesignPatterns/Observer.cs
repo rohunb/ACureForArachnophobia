@@ -14,4 +14,5 @@ public abstract class Observer: MonoBehaviour
     virtual public void UpdateSpawnerDeath(SwarmSpawner spawner) { }
     virtual public void UpdateSoldierPos(Vector3[] soldierPos) { }
     virtual public void UpdateLowestHPSoldier() { }
+    virtual public void UpdateCredits(int amount) { }
 }

@@ -96,6 +96,7 @@ public class Health : Subject
         switch (tag)
         {
             case "Enemy":
+                NotifyGiveCredits(drone.resoureValue);
                 GameObject bloodSplatter = Instantiate(bloodSplatterPrefab, transform.position + transform.up*.5f, transform.rotation) as GameObject;
                 GameObject.Destroy(bloodSplatter, 2.0f);
                 Notify();
@@ -110,6 +111,7 @@ public class Health : Subject
                 Invoke("Kill", 1.0f);
                 break;
             case "EnemyStructure":
+                NotifyGiveCredits(spawner.resoureValue);
                 NotifyDead();
                 spawner.enabled = false;
                 Invoke("Kill", 0.0f);
@@ -133,17 +135,13 @@ public class Health : Subject
         {
             case "Enemy":
                 boxCol.enabled = false;
-                //Invoke("ReturnToPool", 1.0f);
-                //ReturnToPool();
                 Destroy(gameObject, 1.0f);
                 break;
             case "EnemyStructure":
                 boxCol.enabled = false;
                 foreach (GameObject drone in spawner.drones.ToArray())
                 {
-                    //drone.GetComponent<Health>().ReturnToPool();
                     drone.GetComponent<Health>().UpdateHealth(-500);
-                    
                 }
                 Destroy(gameObject, 2.0f);
                 break;
@@ -154,6 +152,13 @@ public class Health : Subject
                 break;
         }
 
+    }
+    public void NotifyGiveCredits(int amount)
+    {
+        foreach (Observer obs in observers)
+        {
+            obs.UpdateCredits(amount);
+        }
     }
     public void NotifyHealthUpdate()
     {
