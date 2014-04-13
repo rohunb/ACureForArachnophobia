@@ -88,7 +88,8 @@ public class DroneBehavior : Enemy
         //        }
         //    }
         //}
-        dist = Vector3.Distance(destination.position, transform.position);
+        if(destination)
+            dist = Vector3.Distance(destination.position, transform.position);
 
         //if (inRange)
         //{
@@ -164,8 +165,14 @@ public class DroneBehavior : Enemy
                 moveToWeight = 1f;
                 break;
             case AI_State.Attacking:
+                if(!destination)
+                {
+                    currentState = AI_State.Swarming;
+                    break;
+                }
                 rigidbody.velocity = Vector3.zero;
                 rigidbody.angularVelocity = Vector3.zero;
+
                 if (soldierInSight)
                 {
                     if (dist > closeToTargetRange)
@@ -182,6 +189,8 @@ public class DroneBehavior : Enemy
                     currentState = AI_State.Swarming;
                     break;
                 }
+                Vector3 targetPostition = new Vector3(destination.position.x, transform.position.y, destination.position.z);
+                transform.LookAt(targetPostition);
                 Attack();
                 separationWeight = 0f;
                 alignmentWeight = 0f;
@@ -304,7 +313,7 @@ public class DroneBehavior : Enemy
             }
 
             //move to
-            if (Vector3.Distance(destination.position, swarm.transform.position) > 4f)
+            if (destination && Vector3.Distance(destination.position, swarm.transform.position) > 4f)
             {
                 //Vector3 diff = destination.position - swarm.transform.position;
                 moveToSum += destination.position;

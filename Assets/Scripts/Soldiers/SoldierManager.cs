@@ -10,6 +10,8 @@ public class SoldierManager : Subject {
     Soldier[] allUnitsArr;
     List<Vector3> prevSoldierPos;
 
+    InputResolver inputResolver;
+
 	// Use this for initialization
 	void Awake () {
         allUnitsArr = GameObject.FindObjectsOfType<Soldier>();
@@ -20,7 +22,7 @@ public class SoldierManager : Subject {
             soldiers[i].soldierSight.GetComponent<SoldierSight>().Attach(soldiers[i]);
             prevSoldierPos.Add(soldiers[i].transform.position);
         }
-               
+        inputResolver = GameObject.FindObjectOfType<InputResolver>();       
 	}
 	void Start()
     {
@@ -29,20 +31,51 @@ public class SoldierManager : Subject {
 	// Update is called once per frame
 	void Update () {
         bool toNotify = false;
-        for (int i = 0; i < soldiers.Count; i++)
+        //if(soldiers.Count != prevSoldierPos.Count)
+        //{
+        //    prevSoldierPos.Clear();
+        //    for (int i = 0; i < soldiers.Count; i++)
+        //    {
+        //        prevSoldierPos[i] = soldiers[i].transform.position;
+
+        //    }
+        //}
+        //else
         {
-            if(soldiers[i].transform.position!=prevSoldierPos[i])
+            for (int i = 0; i < soldiers.Count; i++)
             {
-                toNotify = true;
-            }
-            prevSoldierPos[i] = soldiers[i].transform.position;
-            if (toNotify)
-            {
-                Notify();
-            }
+                if (soldiers[i])
+                {
+                    if (soldiers[i].transform.position != prevSoldierPos[i])
+                    {
+                        toNotify = true;
+                    }
+                    prevSoldierPos[i] = soldiers[i].transform.position;
+                    if (toNotify)
+                    {
+                        Notify();
+                    }
+                }
+            }  
 
         }
 	}
+    public void SoldierDied(Soldier _soldier)
+    {
+        //Debug.Log("soldier Died");
+        soldiers.Remove(_soldier);
+        selectedSoldiers.Remove(_soldier);
+        inputResolver.selectedSoldiers.Remove(_soldier);
+        _soldier.enabled = false;
+        prevSoldierPos.Clear();
+        for (int i = 0; i < soldiers.Count; i++)
+        {
+           // prevSoldierPos[i] = soldiers[i].transform.position;
+            prevSoldierPos.Add(soldiers[i].transform.position);
+            
+        }
+        Notify();
+    }
     public Soldier FindNearestInjuredSoldierWithinRange(Soldier soldier, float range)
     {
         Soldier lowestHPSoldier=null;

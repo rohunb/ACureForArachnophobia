@@ -29,20 +29,23 @@ public class Weapon_HealingBeam : Weapon {
 
     void Update()
     {
-        if(healing)
+        if (origin)
         {
-            HealTarget();
-            CreateBeamEffect();
-        }
-        else if (firing)
-        {
-            DamageTarget();
-            CreateBeamEffect();
-        }
+            if (healing)
+            {
+                HealTarget();
+                CreateBeamEffect();
+            }
+            else if (firing)
+            {
+                DamageTarget();
+                CreateBeamEffect();
+            }
 
-        else
-        {
-            line.enabled = false;
+            else
+            {
+                line.enabled = false;
+            }
         }
         currentTimer += Time.deltaTime;
     }
@@ -79,12 +82,16 @@ public class Weapon_HealingBeam : Weapon {
     }
     public void Heal(Transform _target)
     {
+        if (!healing)
+            AudioManager.Instance.PlaySound(AudioManager.Sound.HealingBeam, true);
         target = _target;
         healing = true;
         line.renderer.material.SetColor("_TintColor", Color.green);
     }
     public void StopHealing()
     {
+        if (healing)
+            AudioManager.Instance.StopSound(AudioManager.Sound.HealingBeam);
         healing = false;
     }
     void CreateBeamEffect()

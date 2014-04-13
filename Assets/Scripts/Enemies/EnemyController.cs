@@ -28,14 +28,24 @@ public class EnemyController : Observer {
 	}
     public override void UpdateSoldierPos(Vector3[] soldierPos)
     {
-        soldierPosTree = KDTree.MakeFromPoints(soldierPos);
-        foreach (SwarmSpawner spawner in spawners)
+        if (soldierPos.Length > 0)
         {
-            int nearestIndex=soldierPosTree.FindNearest(spawner.transform.position);
-            Soldier nearest=soldierManager.soldiers[nearestIndex];
-            if(!spawner.nearestSoldier ||  spawner.nearestSoldier != nearest)
+            soldierPosTree = KDTree.MakeFromPoints(soldierPos);
+            foreach (SwarmSpawner spawner in spawners)
             {
-                spawner.UpdateDronesTarget(nearest.transform);
+                int nearestIndex = soldierPosTree.FindNearest(spawner.transform.position);
+                Soldier nearest = soldierManager.soldiers[nearestIndex];
+                if (!spawner.nearestSoldier || spawner.nearestSoldier != nearest)
+                {
+                    spawner.UpdateDronesTarget(nearest.transform);
+                }
+            }
+        }
+        else
+        {
+            foreach (SwarmSpawner spawner in spawners)
+            {
+                spawner.UpdateDronesTarget(null);
             }
         }
     }

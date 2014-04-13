@@ -29,6 +29,9 @@ public class Health : Subject
 
     EnemyController enemyController;
 
+    Soldier soldier;
+    SoldierManager soldierManager;
+
     void Awake()
     {
         switch (tag)
@@ -40,6 +43,10 @@ public class Health : Subject
             case "EnemyStructure":
                 spawner = gameObject.GetComponent<SwarmSpawner>();
                 boxCol = GetComponent<BoxCollider>();
+                break;
+            case "Soldier":
+                soldier = GetComponent<Soldier>();
+                soldierManager = GameObject.FindObjectOfType<SoldierManager>();
                 break;
             default:
                 break;
@@ -67,6 +74,7 @@ public class Health : Subject
     void StartDying()
     {
         //death
+        
         alive = false;
         switch (tag)
         {
@@ -88,6 +96,15 @@ public class Health : Subject
                 NotifyDead();
                 spawner.enabled = false;
                 Invoke("Kill", 0.0f);
+                break;
+            case "Soldier":
+                //Debug.Log("startDying");
+                
+                soldierManager.SoldierDied(soldier);
+                AudioManager.Instance.StopSound(AudioManager.Sound.HealingBeam);
+                AudioManager.Instance.StopSound(AudioManager.Sound.LightningGun);
+                animation.CrossFade("onGround");
+                Invoke("Kill", 1.2f);
                 break;
             default:
                 break;
@@ -112,6 +129,9 @@ public class Health : Subject
                     
                 }
                 Destroy(gameObject, 2.0f);
+                break;
+            case "Soldier":
+                Destroy(gameObject);
                 break;
             default:
                 break;

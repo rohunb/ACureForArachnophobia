@@ -29,25 +29,31 @@ public class FlameDamager : ProjectileDamager {
     }
 	// Update is called once per frame
 	void Update () {
-        float dist = Vector3.Distance(transform.position, origin.transform.position);
-        col.center = new Vector3(0.0f,0.0f,dist / -2f);
-        col.height = dist;
-
-        if (currentTimer >= firePulseTimer)
+        if (!origin)
         {
-            bool doneDamage = false;
-            foreach (GameObject obj in collidedObjects.ToArray())
-            {
-                if (obj)
-                {
-                    obj.GetComponent<Health>().UpdateHealth(-damage);
-                    doneDamage = true;
-                }
-            }
-            if (doneDamage)
-                currentTimer = 0f;
+            Destroy(gameObject);
         }
+        else
+        {
+            float dist = Vector3.Distance(transform.position, origin.transform.position);
+            col.center = new Vector3(0.0f, 0.0f, dist / -2f);
+            col.height = dist;
 
+            if (currentTimer >= firePulseTimer)
+            {
+                bool doneDamage = false;
+                foreach (GameObject obj in collidedObjects.ToArray())
+                {
+                    if (obj)
+                    {
+                        obj.GetComponent<Health>().UpdateHealth(-damage);
+                        doneDamage = true;
+                    }
+                }
+                if (doneDamage)
+                    currentTimer = 0f;
+            }
+        }
         currentTimer += Time.deltaTime;
 	}
     protected  override void OnTriggerEnter(Collider other)

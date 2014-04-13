@@ -89,22 +89,29 @@ public class SwarmSpawner : Enemy {
     public void UpdateDronesTarget(Transform _target)
     {
         target = _target;
-        foreach (GameObject drone in drones)
+        if (target)
         {
-            DroneBehavior db=drone.GetComponent<DroneBehavior>();
-            db.destination = _target;
-            
-            float distToTarget=Vector3.Distance(_target.position,transform.position);
-            if(distToTarget<droneSightRange)
+            foreach (GameObject drone in drones)
             {
-                soldierInSight = true;
-            }
-            if(soldierInSight && distToTarget>abandonTargetRange)
-            {
-                soldierInSight = false;
-            }
+                DroneBehavior db = drone.GetComponent<DroneBehavior>();
+                db.destination = _target;
 
-            db.soldierInSight = soldierInSight;
+                float distToTarget = Vector3.Distance(_target.position, transform.position);
+                if (distToTarget < droneSightRange)
+                {
+                    soldierInSight = true;
+                }
+                if (soldierInSight && distToTarget > abandonTargetRange)
+                {
+                    soldierInSight = false;
+                }
+
+                db.soldierInSight = soldierInSight;
+            }
+        }
+        else
+        {
+            soldierInSight = false;
         }
     }
 
