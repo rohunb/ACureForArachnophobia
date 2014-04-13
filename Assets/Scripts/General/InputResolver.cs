@@ -141,7 +141,9 @@ public class InputResolver : MonoBehaviour {
                 if (upgradeManager.CreateTransaction(-weapon.cost))
                     selectedSoldiers[i].EquipWeapon(weapon.wpnName);
                 else
-                    Debug.Log("not enough credits");
+                {
+                    //Debug.Log("not enough credits");
+                }
             }
         }
         //Destroy(_weapon);

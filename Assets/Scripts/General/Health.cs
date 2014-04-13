@@ -32,6 +32,9 @@ public class Health : Subject
     Soldier soldier;
     SoldierManager soldierManager;
 
+    public float particleTimer = .5f;
+    float currentTimer = 0f;
+
     void Awake()
     {
         switch (tag)
@@ -58,6 +61,10 @@ public class Health : Subject
         health = maxHealth;
         alive = true;
     }
+    void Update()
+    {
+        currentTimer += Time.deltaTime;
+    }
     public void UpdateHealth(int amount)
     {
         if (alive)
@@ -70,9 +77,14 @@ public class Health : Subject
                     case "Enemy":
                         AudioManager.Instance.PlaySound(AudioManager.Sound.SpiderDeath, false);
                         break;
-                    //case "EnemyStructure":
-
-                    //    break;
+                    case "EnemyStructure":
+                        if (currentTimer >= particleTimer)
+                        {
+                            GameObject blood = Instantiate(bloodSplatterPrefab, transform.position + transform.up * 7f, Quaternion.identity) as GameObject;
+                            GameObject.Destroy(blood, 2.0f);
+                            currentTimer = 0f;
+                        }
+                        break;
                     case "Soldier":
                         AudioManager.Instance.PlaySound(AudioManager.Sound.SoldierHurt, false);
                         break;
@@ -111,10 +123,12 @@ public class Health : Subject
                 Invoke("Kill", 1.0f);
                 break;
             case "EnemyStructure":
+                //GameObject blood = Instantiate(bloodSplatterPrefab, transform.position + transform.up*.5f, transform.rotation) as GameObject;
+                //GameObject.Destroy(blood, 2.0f);
                 NotifyGiveCredits(spawner.resoureValue);
                 NotifyDead();
                 spawner.enabled = false;
-                Invoke("Kill", 0.0f);
+                Invoke("Kill", 1.0f);
                 break;
             case "Soldier":
                 //Debug.Log("startDying");
@@ -143,7 +157,7 @@ public class Health : Subject
                 {
                     drone.GetComponent<Health>().UpdateHealth(-500);
                 }
-                Destroy(gameObject, 2.0f);
+                Destroy(gameObject);
                 break;
             case "Soldier":
                 Destroy(gameObject);
