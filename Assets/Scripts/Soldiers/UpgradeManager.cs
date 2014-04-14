@@ -289,7 +289,7 @@ public class UpgradeManager : Observer {
     }
     void OnGUI()
     {
-        GUI.Label(creditsLabalRect, "<color=black><size=20> Credits: " + credits + "</size></color>");
+        GUI.Label(creditsLabalRect, "<color=black><size=16> Credits: " + credits + "</size></color>");
         if (displayEquips)
         {
             foreach (Soldier soldier in inputResolver.selectedSoldiers)

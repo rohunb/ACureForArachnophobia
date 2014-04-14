@@ -70,8 +70,11 @@ public class EnemyController : Observer {
     }
     public override void UpdateSpawnerDeath(SwarmSpawner spawner) 
     {
-
         spawners.Remove(spawner);
+        if(spawners.Count<=0)
+        {
+            SceneManager.Instance.GameEnd(true);
+        }
     }
     void NotifySpawnersToSpawn()
     {

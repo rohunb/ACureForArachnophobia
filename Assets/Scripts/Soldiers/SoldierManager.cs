@@ -75,6 +75,10 @@ public class SoldierManager : Subject {
             
         }
         Notify();
+        if(soldiers.Count<=0)
+        {
+            SceneManager.Instance.GameEnd(false);
+        }
     }
     public Soldier FindNearestInjuredSoldierWithinRange(Soldier soldier, float range)
     {

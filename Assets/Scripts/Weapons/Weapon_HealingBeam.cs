@@ -96,20 +96,23 @@ public class Weapon_HealingBeam : Weapon {
     }
     void CreateBeamEffect()
     {
-        line.enabled = true;
-        length = Mathf.RoundToInt(Vector3.Distance(target.position, shootPoint.position));
-        length++;
-        line.SetVertexCount(length);
-        for (int i = 0; i < length; i++)
+        if (target)
         {
-            Vector3 newPos = shootPoint.position;
-            Vector3 offset = Vector3.zero;
-            offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-lineNoise, lineNoise);
-            offset.y = newPos.y + i * shootPoint.forward.y;// +Random.Range(-lineNoise, lineNoise);
-            offset.z = newPos.z + i * shootPoint.forward.z;// +Random.Range(-lineNoise, lineNoise);
-            newPos = offset;
-            line.SetPosition(i, newPos);
-            //noise += noiseIncrement;
+            line.enabled = true;
+            length = Mathf.RoundToInt(Vector3.Distance(target.position, shootPoint.position));
+            length++;
+            line.SetVertexCount(length);
+            for (int i = 0; i < length; i++)
+            {
+                Vector3 newPos = shootPoint.position;
+                Vector3 offset = Vector3.zero;
+                offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-lineNoise, lineNoise);
+                offset.y = newPos.y + i * shootPoint.forward.y;// +Random.Range(-lineNoise, lineNoise);
+                offset.z = newPos.z + i * shootPoint.forward.z;// +Random.Range(-lineNoise, lineNoise);
+                newPos = offset;
+                line.SetPosition(i, newPos);
+                //noise += noiseIncrement;
+            }
         }
         //line.SetPosition(length - 1, target.position);
         
