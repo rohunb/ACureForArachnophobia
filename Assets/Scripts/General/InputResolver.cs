@@ -21,6 +21,7 @@ public class InputResolver : MonoBehaviour {
     
 	// Use this for initialization
 	void Awake () {
+        
         soldierController = gameObject.GetComponent<SoldierManager>();
         cameraMover = Camera.main.GetComponent<CameraMover>();
         upgradeManager = GameObject.FindObjectOfType<UpgradeManager>().GetComponent<UpgradeManager>();

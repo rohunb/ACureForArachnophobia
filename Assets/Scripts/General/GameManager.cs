@@ -13,12 +13,16 @@ public class GameManager : MonoBehaviour {
     enum GameScene { MainMenu, Game, Pause, GameOver}
     GameScene currentScene = GameScene.MainMenu;
 
+    public GUISkin guiSkin;
+
 	// Use this for initialization
 	void Awake () {
-
-        enemyController = GameObject.FindGameObjectWithTag("EnemyController").GetComponent<EnemyController>();
-        soldierManager = GameObject.FindObjectOfType<SoldierManager>();
-        soldierManager.Attach(enemyController);
+        if (currentScene == GameScene.Game)
+        {
+            enemyController = GameObject.FindGameObjectWithTag("EnemyController").GetComponent<EnemyController>();
+            soldierManager = GameObject.FindObjectOfType<SoldierManager>();
+            soldierManager.Attach(enemyController);
+        }
 
 
 	}
@@ -46,6 +50,30 @@ public class GameManager : MonoBehaviour {
     }
     void OnGUI()
     {
-
+        GUI.skin = guiSkin;
+        switch (currentScene)
+        {
+            case GameScene.MainMenu:
+                if (GUI.Button(new Rect(Screen.width * .35f, Screen.height * .24f, Screen.width * .2f, Screen.height * .06f), "New Game"))
+            {
+                currentScene = GameScene.Game;
+                Application.LoadLevel(1);
+               // fadeToGameScene = true;
+            }
+            
+            if (GUI.Button(new Rect(Screen.width * .35f, Screen.height * .64f, Screen.width * .2f, Screen.height * .06f), "Quit"))
+            {
+                Application.Quit();
+            }
+                break;
+            case GameScene.Game:
+                break;
+            case GameScene.Pause:
+                break;
+            case GameScene.GameOver:
+                break;
+            default:
+                break;
+        }
     }
 }
