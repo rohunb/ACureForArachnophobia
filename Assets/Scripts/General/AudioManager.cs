@@ -4,7 +4,7 @@ using System.Collections;
 public class AudioManager : MonoBehaviour
 {
 
-    public enum Sound { MP5, Shotgun, LightningGun, Flamethrower, HealingBeam, SoldierHurt, SoldierDeath, SpiderAttack, SpiderDeath, BackgroundTrack }
+    public enum Sound { MP5, Shotgun, LightningGun, Flamethrower, HealingBeam, SoldierHurt, SoldierDeath, SpiderAttack, SpiderDeath, BackgroundTrack ,Click}
 
     public AudioClip clip_MP5;
     public AudioClip clip_Shotgun;
@@ -16,6 +16,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip clip_SpiderAttack;
     public AudioClip clip_SpiderDeath;
     public AudioClip clip_BackgroundTrack;
+    public AudioClip click;
 
     AudioSource[] sources;
     public int numSources = 16;
@@ -81,6 +82,9 @@ public class AudioManager : MonoBehaviour
             case Sound.BackgroundTrack:
                 audioClip = clip_BackgroundTrack;
                 break;
+            case Sound.Click:
+                audioClip = click;
+                break;
             default:
                 break;
         }
@@ -134,6 +138,9 @@ public class AudioManager : MonoBehaviour
                 break;
             case Sound.BackgroundTrack:
                 audioClip = clip_BackgroundTrack;
+                break;
+            case Sound.Click:
+                audioClip = click;
                 break;
             default:
                 break;
@@ -189,6 +196,9 @@ public class AudioManager : MonoBehaviour
                 break;
             case Sound.BackgroundTrack:
                 audioClip = clip_BackgroundTrack;
+                break;
+            case Sound.Click:
+                audioClip = click;
                 break;
             default:
                 break;
