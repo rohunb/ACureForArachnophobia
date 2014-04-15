@@ -1,34 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SceneManager : MonoBehaviour {
+public class SceneManager : MonoBehaviour
+{
     enum GameScene { MainMenu, Game, Win, GameOver }
-    [SerializeField]
     GameScene currentScene = GameScene.MainMenu;
-    public GUISkin guiSkin;
+
     public GameObject menuButtonPrefab;
 
     float buttonSpacing = 2.4f;
+    bool loading = false;
 
-    private static SceneManager instance=null;
+    private static SceneManager instance = null;
     public static SceneManager Instance
     {
-        get{return instance;}
+        get { return instance; }
     }
 
     void Awake()
     {
-        if(instance!=null)
+        if (instance != null)
         {
-            Debug.LogError(name +"error: already initialized",null);
+            Debug.LogError(name + "error: already initialized", null);
             Destroy(gameObject);
         }
-        instance=this;
+        instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
 
-	// Use this for initialization
+    // Use this for initialization
     void Start()
     {
         GameObject button;
@@ -101,7 +102,7 @@ public class SceneManager : MonoBehaviour {
 
     void OnLevelWasLoaded(int levelID)
     {
-        
+        loading = false;
         GameObject button;
         MenuButton menuButton;
         switch (currentScene)
@@ -168,37 +169,28 @@ public class SceneManager : MonoBehaviour {
             default:
                 break;
         }
-	}
-    
-    //void Update()
-    //{
-    //    switch (currentScene)
-    //    {
-    //        case GameScene.MainMenu:
-
-    //            break;
-    //        case GameScene.Game:
-    //            break;
-    //        case GameScene.Win:
-    //            break;
-    //        case GameScene.GameOver:
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    //}
+    }
+    void OnGUI()
+    {
+        if(loading)
+        {
+            GUI.Label(new Rect(Screen.width / 2f - 50f, Screen.height- 50f, 300f, 100f), "<size=28>Loading...</size>");
+        }
+    }
     public void OnClick(string buttonName)
     {
-        Debug.Log("clicked +" + buttonName);
+
         switch (buttonName)
         {
             case "Start":
                 currentScene = GameScene.Game;
-                   Application.LoadLevel("Level1");
+                loading = true;
+                Application.LoadLevel("Level1");
                 break;
             case "Restart":
                 currentScene = GameScene.Game;
-                   Application.LoadLevel("Level1");
+                loading = true;
+                Application.LoadLevel("Level1");
                 break;
             case "Quit":
                 Application.Quit();
@@ -207,7 +199,7 @@ public class SceneManager : MonoBehaviour {
                 break;
         }
     }
-    
+
     public void GameEnd(bool win)
     {
         if (win)
@@ -221,4 +213,5 @@ public class SceneManager : MonoBehaviour {
             Application.LoadLevel("GameOver");
         }
     }
+    
 }
