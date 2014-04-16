@@ -11,6 +11,7 @@ public class UpgradeManager : Observer {
     public GameObject flameButton;
     public GameObject healingButton;
     public GameObject closeButton;
+    public TextMesh creditsText;
     public int numWeaponButtons = 6;
 
     public GameObject MP5;
@@ -53,7 +54,8 @@ public class UpgradeManager : Observer {
     // Use this for initialization
 	void Start () {
 
-        creditsLabalRect = new Rect(Screen.width / 17.55f, Screen.height / 1.22f, Screen.width / 9f, Screen.height / 24f);
+        //creditsLabalRect = new Rect(Screen.width / 17.55f, Screen.height / 1.22f, Screen.width / 9f, Screen.height / 24f);
+        creditsText.text = "Credits: " + credits;
         windowSizeCurrent = windowSizeClosed;
         closeButtonCurrentPos = closeButtonClosedPos;
         currentButtonPos = new Vector2[6];
@@ -271,7 +273,7 @@ public class UpgradeManager : Observer {
         if (credits + amount >= 0)
         {
             credits += amount;
-
+            creditsText.text = "Credits: " + credits;
             return true;
         }
         else
@@ -289,7 +291,7 @@ public class UpgradeManager : Observer {
     }
     void OnGUI()
     {
-        GUI.Label(creditsLabalRect, "<color=black><size=16> Credits: " + credits + "</size></color>");
+        //GUI.Label(creditsLabalRect, "<color=black><size=16> Credits: " + credits + "</size></color>");
         if (displayEquips)
         {
             foreach (Soldier soldier in inputResolver.selectedSoldiers)
