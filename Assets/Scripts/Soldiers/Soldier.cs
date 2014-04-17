@@ -307,18 +307,22 @@ public class Soldier : Observer
         line.enabled = true;
 
         Enemy target = NearestEnemy();
-        if (target) 
+        if (target)
+        {
             AimWeaponAt(target.transform);
-        animation.CrossFade("attack");
-        ((Weapon_HealingBeam)currentWeapon).Fire(target.transform);
+            animation.CrossFade("attack");
+            ((Weapon_HealingBeam)currentWeapon).Fire(target.transform);
+        }
     }
     void Heal()
     {
         line.enabled = true;
         if (lowestHPSoldier)
+        {
             AimWeaponAt(lowestHPSoldier.transform);
-        animation.CrossFade("attack");
-        ((Weapon_HealingBeam)currentWeapon).Heal(lowestHPSoldier.transform);
+            animation.CrossFade("attack");
+            ((Weapon_HealingBeam)currentWeapon).Heal(lowestHPSoldier.transform);
+        }
     }
     void AimWeaponAt(Transform target)
     {

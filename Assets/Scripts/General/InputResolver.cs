@@ -166,70 +166,138 @@ public class InputResolver : MonoBehaviour {
             }
         }
     }
+    //Vector3[] CalculateGroupMove(Vector3 dest)
+    //{
+    //    Vector3 averagePos = Vector3.zero;
+    //    int numSoldiers = selectedSoldiers.Count;
+    //    Vector3[] posArr = new Vector3[numSoldiers];
+    //    Vector3[] groupMoveDests = new Vector3[numSoldiers];
+    //    Vector3[] localPos = new Vector3[numSoldiers];
+
+    //    float formationGap = 2.0f;
+
+    //    for (int i = 0; i < numSoldiers; i++)
+    //    {
+    //        posArr[i] = selectedSoldiers[i].transform.position;
+    //        averagePos += posArr[i];
+    //    }
+
+
+    //    averagePos = numSoldiers > 0 ? averagePos / numSoldiers : averagePos;
+
+    //    Debug.Log("averagePos: " + averagePos);
+    //    KDTree posTree = KDTree.MakeFromPoints(posArr);
+    //    int nearestToAvgPos = posTree.FindNearest(averagePos);
+    //    Soldier centralSoldier = selectedSoldiers[nearestToAvgPos];
+
+    //    //calculating local positions
+    //    for (int i = 0; i < numSoldiers; i++)
+    //    {
+    //        //if (i != nearestToAvgPos)
+    //        {
+    //            //localPos[i] = centralSoldier.transform.InverseTransformDirection(selectedSoldiers[i].transform.position);
+    //            localPos[i] = centralSoldier.transform.InverseTransformPoint(posArr[i]);
+    //        }
+    //        //else
+    //        //{
+    //        //    localPos[i] = Vector3.zero;
+    //        //}
+    //    }
+    //    Debug.Log("before sort");
+    //    foreach (Vector3 pos in localPos)
+    //    {
+    //        Debug.Log(pos.x);
+    //    }
+    //    //SortSoldiersPerDistFromCenter(localPos,localPos[nearestToAvgPos]);
+    //    SortSoldiersPerLocalX(localPos, localPos[nearestToAvgPos]);
+
+    //    Debug.Log("after sort");
+    //    foreach (Vector3 pos in localPos)
+    //    {
+    //        Debug.Log(pos.x);
+    //    }
+    //    //SortSoldiersPerDistFromCenter(posArr, posArr[nearestToAvgPos]);
+    //    //int centralSoldierIndex=0;
+    //    //for (int i = 0; i < numSoldiers; i++)
+    //    //{
+    //    //    if(selectedSoldiers[i]==centralSoldier)
+    //    //    {
+    //    //        centralSoldierIndex = i;
+    //    //        break;
+    //    //    }
+    //    //}
+
+
+    //    groupMoveDests[0] = dest;
+    //    Vector3 vecToDest = dest - centralSoldier.transform.position;
+    //    Vector3 normal;
+    //    for (int i = 1; i < numSoldiers; i++)
+    //    {
+    //        //if(i%2==0)
+    //        //if (localPos[i].x - localPos[nearestToAvgPos].x > 0)
+    //        //if(localPos[i].x == 0.0f)
+    //        //{
+    //        //    groupMoveDests[i] = dest;
+    //        //}
+    //        if(localPos[i].x>0f)
+    //        {
+    //            normal = new Vector3(-vecToDest.z, vecToDest.y, vecToDest.x).normalized;
+    //            //groupMoveDests[i] = new Vector3(-vecToDist.z, vecToDist.y, vecToDist.x) * formationGap * i / 2;
+    //            groupMoveDests[i] = dest + normal * formationGap * i / 2;
+    //            //Debug.Log("i: " + i + " gap: " + formationGap * i / 2);
+    //        }
+    //        else
+    //        {
+    //            normal = new Vector3(vecToDest.z, vecToDest.y, -vecToDest.x).normalized;
+    //            //groupMoveDests[i] = new Vector3(vecToDist.z, vecToDist.y, -vecToDist.x) * formationGap * (i - i / 2);
+    //            groupMoveDests[i] = dest + normal * formationGap * (i - i / 2);
+    //            //Debug.Log("i: " + i + " gap: " + formationGap * (i - i / 2));
+    //        }
+    //    }
+
+    //    return groupMoveDests;
+    //}
+
     Vector3[] CalculateGroupMove(Vector3 dest)
     {
         Vector3 averagePos = Vector3.zero;
         int numSoldiers = selectedSoldiers.Count;
         Vector3[] posArr = new Vector3[numSoldiers];
         Vector3[] groupMoveDests = new Vector3[numSoldiers];
-        //Vector3[] localPos = new Vector3[numSoldiers];
-        float formationGap=2.0f;
+
+        float formationGap = 2.0f;
 
         for (int i = 0; i < numSoldiers; i++)
         {
-            posArr[i]=selectedSoldiers[i].transform.position;
+            posArr[i] = selectedSoldiers[i].transform.position;
             averagePos += posArr[i];
         }
 
-        averagePos = averagePos / numSoldiers;
-        
+        averagePos = numSoldiers > 0 ? averagePos / numSoldiers : averagePos;
+
         KDTree posTree = KDTree.MakeFromPoints(posArr);
-        int nearestToAvgPos=posTree.FindNearest(averagePos);
-        //calculating local positions
-        //for (int i = 0; i < numSoldiers; i++)
-        //{
-        //    if (i != nearestToAvgPos)
-        //    {
-        //        localPos[i] = selectedSoldiers[nearestToAvgPos].transform.InverseTransformDirection(selectedSoldiers[i].transform.position);
-        //    }
-        //    else
-        //    {
-        //        localPos[i] = Vector3.zero;
-        //    }
-        //}
-        Soldier centralSoldier=selectedSoldiers[nearestToAvgPos];
-        //SortPerDistFromCenter(localPos,localPos[nearestToAvgPos]);
-        SortPerDistFromCenter(posArr, posArr[nearestToAvgPos]);
-        //int centralSoldierIndex=0;
-        //for (int i = 0; i < numSoldiers; i++)
-        //{
-        //    if(selectedSoldiers[i]==centralSoldier)
-        //    {
-        //        centralSoldierIndex = i;
-        //        break;
-        //    }
-        //}
+        int nearestToAvgPos = posTree.FindNearest(averagePos);
+        Soldier centralSoldier = selectedSoldiers[nearestToAvgPos];
+
+        SortSoldiersPerDistFromCenter(posArr, posArr[nearestToAvgPos]);
+
         groupMoveDests[0] = dest;
-        Vector3 vecToDist = dest - centralSoldier.transform.position;
+        Vector3 vecToDest = dest - centralSoldier.transform.position;
         Vector3 normal;
         for (int i = 1; i < numSoldiers; i++)
         {
-            if(i%2==0)
+            if (i % 2 == 0)
             {
-                normal = new Vector3(-vecToDist.z, vecToDist.y, vecToDist.x).normalized;
-                //groupMoveDests[i] = new Vector3(-vecToDist.z, vecToDist.y, vecToDist.x) * formationGap * i / 2;
-                groupMoveDests[i] = dest+normal * formationGap * i / 2;
-                //Debug.Log("i: " + i + " gap: " + formationGap * i / 2);
+                normal = new Vector3(-vecToDest.z, vecToDest.y, vecToDest.x).normalized;
+                groupMoveDests[i] = dest + normal * formationGap * i / 2;
             }
             else
             {
-                normal = new Vector3(vecToDist.z, vecToDist.y, -vecToDist.x).normalized;
-                //groupMoveDests[i] = new Vector3(vecToDist.z, vecToDist.y, -vecToDist.x) * formationGap * (i - i / 2);
-                groupMoveDests[i] = dest+normal * formationGap * (i-i / 2);
-                //Debug.Log("i: " + i + " gap: " + formationGap * (i - i / 2));
+                normal = new Vector3(vecToDest.z, vecToDest.y, -vecToDest.x).normalized;
+                groupMoveDests[i] = dest + normal * formationGap * (i - i / 2);
             }
         }
-        
+
         return groupMoveDests;
     }
     void Deselect()
@@ -256,7 +324,38 @@ public class InputResolver : MonoBehaviour {
             return false;
         }
     }
-    void SortPerDistFromCenter(Vector3[] arr, Vector3 center)
+
+    void SortSoldiersPerLocalX(Vector3[] arr, Vector3 center)
+    {
+        float[] distances = new float[arr.Length];
+        for (int i = 0; i < arr.Length; i++)
+        {
+            distances[i] = Mathf.Abs(arr[i].x);
+        }
+//        for (int i = arr.Length - 1; i >= 0; i--)
+        for (int i = distances.Length - 1; i >= 0; i--)
+        {
+            for (int j = 1; j <= i; j++)
+            {
+                //if (arr[j - 1].x > arr[j].x)
+                if (distances[j - 1] > distances[j])
+                {
+                    float temp = distances[j];
+                    distances[j] = distances[j - 1];
+                    distances[j - 1] = temp;
+                    Vector3 tempPos = arr[j];
+                    arr[j] = arr[j - 1];
+                    arr[j - 1] = tempPos;
+                    Soldier tmpSld = selectedSoldiers[j];
+                    selectedSoldiers[j] = selectedSoldiers[j - 1];
+                    selectedSoldiers[j - 1] = tmpSld;
+                }
+            }
+        }
+
+
+    }
+    void SortSoldiersPerDistFromCenter(Vector3[] arr, Vector3 center)
     {
         float[] distances=new float[arr.Length];
         for (int i = 0; i < arr.Length; i++)

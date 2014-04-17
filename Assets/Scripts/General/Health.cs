@@ -127,7 +127,7 @@ public class Health : Subject
                 //GameObject.Destroy(blood, 2.0f);
                 NotifyGiveCredits(spawner.resoureValue);
                 NotifyDead();
-                spawner.enabled = false;
+                //spawner.enabled = false;
                 Invoke("Kill", 1.0f);
                 break;
             case "Soldier":
@@ -155,9 +155,13 @@ public class Health : Subject
                 boxCol.enabled = false;
                 foreach (GameObject drone in spawner.drones.ToArray())
                 {
-                    drone.GetComponent<Health>().UpdateHealth(-500);
+                    Health droneHealth = drone.GetComponent<Health>();
+                    droneHealth.UpdateHealth(droneHealth.maxHealth);
                 }
-                Destroy(gameObject);
+                if (spawner.drones.Count <= 0)
+                    Destroy(gameObject);
+                else
+                    Invoke("Kill",1.0f);
                 break;
             case "Soldier":
                 Destroy(gameObject);

@@ -100,7 +100,7 @@ public class SoldierSight : Subject {
         }
 
     }
-
+    
     void OnTriggerExit(Collider other)
     {
         //if (other.tag == "Enemy")
