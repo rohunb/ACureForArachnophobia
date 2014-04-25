@@ -4,7 +4,9 @@ using System.Collections;
 public class AudioManager : MonoBehaviour
 {
 
-    public enum Sound { MP5, Shotgun, LightningGun, Flamethrower, HealingBeam, SoldierHurt, SoldierDeath, SpiderAttack, SpiderDeath, BackgroundTrack ,Click}
+    public enum Sound { MP5, Shotgun, LightningGun, Flamethrower, HealingBeam, 
+        SoldierHurt, SoldierDeath, SpiderAttack, SpiderDeath, GameBackgroundTrack, MainMenuBackgroundTrack,
+        WinBackgroundTrack, GameOverBackgroundTrack, Click  }
 
     public AudioClip clip_MP5;
     public AudioClip clip_Shotgun;
@@ -15,7 +17,10 @@ public class AudioManager : MonoBehaviour
     public AudioClip clip_SoldierDeath;
     public AudioClip clip_SpiderAttack;
     public AudioClip clip_SpiderDeath;
-    public AudioClip clip_BackgroundTrack;
+    public AudioClip clip_GameBackgroundTrack;
+    public AudioClip clip_MainMenuBackgroundTrack;
+    public AudioClip clip_WinBackgroundTrack;
+    public AudioClip clip_GameOverBackgroundTrack;
     public AudioClip click;
 
     AudioSource[] sources;
@@ -36,15 +41,16 @@ public class AudioManager : MonoBehaviour
             Debug.LogError(name + ": error: already initialized", this);
         }
         instance = this;
-    }
-
-    void Start()
-    {
         sources = new AudioSource[numSources];
         for (int i = 0; i < numSources; i++)
         {
             sources[i] = gameObject.AddComponent<AudioSource>();
         }
+    }
+
+    void Start()
+    {
+        
     }
 
     public void PlaySound(Sound sound, bool loop)
@@ -79,8 +85,17 @@ public class AudioManager : MonoBehaviour
             case Sound.SpiderDeath:
                 audioClip = clip_SpiderDeath;
                 break;
-            case Sound.BackgroundTrack:
-                audioClip = clip_BackgroundTrack;
+            case Sound.GameBackgroundTrack:
+                audioClip = clip_GameBackgroundTrack;
+                break;
+            case Sound.MainMenuBackgroundTrack:
+                audioClip=clip_MainMenuBackgroundTrack;
+                break;
+            case Sound.WinBackgroundTrack:
+                audioClip=clip_WinBackgroundTrack;
+                break;
+            case Sound.GameOverBackgroundTrack:
+                audioClip = clip_GameOverBackgroundTrack;
                 break;
             case Sound.Click:
                 audioClip = click;
@@ -136,8 +151,17 @@ public class AudioManager : MonoBehaviour
             case Sound.SpiderDeath:
                 audioClip = clip_SpiderDeath;
                 break;
-            case Sound.BackgroundTrack:
-                audioClip = clip_BackgroundTrack;
+            case Sound.GameBackgroundTrack:
+                audioClip = clip_GameBackgroundTrack;
+                break;
+            case Sound.MainMenuBackgroundTrack:
+                audioClip = clip_MainMenuBackgroundTrack;
+                break;
+            case Sound.WinBackgroundTrack:
+                audioClip = clip_WinBackgroundTrack;
+                break;
+            case Sound.GameOverBackgroundTrack:
+                audioClip = clip_GameOverBackgroundTrack;
                 break;
             case Sound.Click:
                 audioClip = click;
@@ -194,8 +218,17 @@ public class AudioManager : MonoBehaviour
             case Sound.SpiderDeath:
                 audioClip = clip_SpiderDeath;
                 break;
-            case Sound.BackgroundTrack:
-                audioClip = clip_BackgroundTrack;
+            case Sound.GameBackgroundTrack:
+                audioClip = clip_GameBackgroundTrack;
+                break;
+            case Sound.MainMenuBackgroundTrack:
+                audioClip = clip_MainMenuBackgroundTrack;
+                break;
+            case Sound.WinBackgroundTrack:
+                audioClip = clip_WinBackgroundTrack;
+                break;
+            case Sound.GameOverBackgroundTrack:
+                audioClip = clip_GameOverBackgroundTrack;
                 break;
             case Sound.Click:
                 audioClip = click;

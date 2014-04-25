@@ -19,23 +19,12 @@ public class ProjectileDamager : MonoBehaviour {
                 case "Soldier":
                     if (other.tag == "Enemy" || other.tag == "EnemyStructure")
                     {
-                        
-                        //Instantiate(explosion, transform.position, Quaternion.identity);
                         other.GetComponent<Health>().UpdateHealth(-damage);
                         rigidbody.velocity = Vector3.zero;
                         rigidbody.angularVelocity = Vector3.zero;
                         ObjectPool.instance.PoolObject(gameObject);
-                        //Destroy(gameObject);
                     }
                     break;
-                //case "EnemyShip":
-                //    if (other.tag == "PlayerShip" || other.tag == "Victim")
-                //    {
-                //        //Instantiate(explosion, transform.position, Quaternion.identity);
-                //        other.GetComponent<Health>().TakeDamage(damage);
-                //        Destroy(gameObject);
-                //    }
-                //    break;
             }
         }
     }

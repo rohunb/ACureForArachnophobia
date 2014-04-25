@@ -24,46 +24,23 @@ public class SwarmSpawner : Enemy {
 
     EnemyController enemyController;
     UpgradeManager upgradeManager;
-    //LineRenderer line;
     
     void Awake()
     {
         enemyController = GameObject.FindObjectOfType<EnemyController>();
         upgradeManager = GameObject.FindObjectOfType<UpgradeManager>();
-      //  line = GetComponent<LineRenderer>();
     }
 
 	protected virtual void Start () {
 		if (prefab == null)
 		{
-			// end early
 			Debug.Log("Please assign a drone prefab.");
 			return;
 		}
-
-		// instantiate the drones
 		drones = new List<GameObject>();
-        //target = nearestSoldier.transform;
-        
-        //for (int i = 0; i < droneCount; i++)
-        //{
-        //    droneTemp = (GameObject) GameObject.Instantiate(prefab);
-        //    DroneBehavior db = droneTemp.GetComponent<DroneBehavior>();
-        //    db.drones = this.drones;
-        //    db.swarm = this;
-        //    db.destination = destination;
-
-        //    // spawn inside circle
-        //    Vector2 pos = new Vector2(transform.position.x, transform.position.z) + Random.insideUnitCircle * spawnRadius;
-        //    droneTemp.transform.position = new Vector3(pos.x, transform.position.y, pos.y);
-        //    droneTemp.transform.parent = transform;
-			
-        //    drones.Add(droneTemp);
-        //}
 	}
     IEnumerator SpawnDrone()
     {
-        //GameObject droneTemp = ObjectPool.instance.GetObjectForType("SpiderDrone", false);
         GameObject droneTemp = (GameObject)GameObject.Instantiate(prefab);
         DroneBehavior db = droneTemp.GetComponent<DroneBehavior>();
         Health health = droneTemp.GetComponent<Health>();
@@ -80,9 +57,9 @@ public class SwarmSpawner : Enemy {
         yield return new WaitForSeconds(spawnTimer);
         spawnTimerUp = true;
     }
-	// Update is called once per frame
+
 	protected virtual void Update () {
-        if (spawnTimerUp && canSpawn)//drones.Count<droneCount)
+        if (spawnTimerUp && canSpawn)
         {
             StartCoroutine("SpawnDrone");
             spawnTimerUp = false;
@@ -126,11 +103,4 @@ public class SwarmSpawner : Enemy {
             obs.UpdateNumEnemies(1);
         }
     }
-
-    protected virtual void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireCube(transform.position, new Vector3(swarmBounds.x, 0f, swarmBounds.y));
-        Gizmos.DrawWireSphere(transform.position, spawnRadius);
-    }
-    
 }

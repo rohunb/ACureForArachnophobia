@@ -53,9 +53,8 @@ public class Weapon_Lightning: Weapon {
             Vector3 newPos = shootPoint.position;
             Vector3 offset = Vector3.zero;
             offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-noise, noise);
-            //offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-lineNoise, lineNoise);
-            offset.y = newPos.y + i * shootPoint.forward.y;// +Random.Range(-lineNoise, lineNoise);
-            offset.z = newPos.z + i * shootPoint.forward.z;// +Random.Range(-lineNoise, lineNoise);
+            offset.y = newPos.y + i * shootPoint.forward.y;
+            offset.z = newPos.z + i * shootPoint.forward.z;
             newPos = offset;
             line.SetPosition(i, newPos);
             if(i>length/2)
@@ -84,19 +83,5 @@ public class Weapon_Lightning: Weapon {
         }
         if (didDamage)
             currentTimer = 0f;
-        //RaycastHit hit;
-        //Ray ray = new Ray(shootPoint.position, shootPoint.forward);
-        //Debug.DrawLine(shootPoint.position, shootPoint.forward.normalized * range);
-        //if (Physics.Raycast(ray, out hit, range+1))
-        //{
-        //    GameObject other = hit.transform.gameObject;
-        //    if (currentTimer >= reloadTimer && (other.tag == "Enemy" || other.tag == "EnemyStructure"))
-        //    {
-        //        Debug.Log(damage);
-        //        other.GetComponent<Health>().UpdateHealth(-damage);
-        //        currentTimer = 0f;
-        //    }
-        //}
-        
     }
 }

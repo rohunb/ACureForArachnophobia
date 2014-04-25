@@ -30,7 +30,6 @@ public class Soldier : Observer
     Projector selectionBox;
     public GameObject healthBar;
     LineRenderer line;
-    //Color lineColour = Color.blue;
 
     SoldierManager soldierManager;
     SoldierSight sight;
@@ -160,7 +159,6 @@ public class Soldier : Observer
                         {
                             moveDirection = (destination - transform.position).normalized;
                             transform.rotation = Quaternion.LookRotation(moveDirection);
-                            //moveDirection = transform.TransformDirection(moveDirection);
                             moveDirection = transform.forward * moveSpeed;
                             controller.SimpleMove(moveDirection);
 
@@ -179,7 +177,6 @@ public class Soldier : Observer
                     {
                         moveDirection = (destination - transform.position).normalized;
                         transform.rotation = Quaternion.LookRotation(moveDirection);
-                        //moveDirection = transform.TransformDirection(moveDirection);
                         moveDirection = transform.forward * moveSpeed;
                         controller.SimpleMove(moveDirection);
 
@@ -198,10 +195,6 @@ public class Soldier : Observer
             case SoldierState.Attacking:
                 if(healingWpn && CheckCanHeal())
                 {
-                    //if(CheckCanHeal())
-                    //{
-                    //   //prevState=
-                    //}
                     
                 }
                 else if (CheckCanAttack())
@@ -214,7 +207,6 @@ public class Soldier : Observer
                     {
                         Attack();
                     }
-
                 }
                     
                 break;
@@ -232,26 +224,16 @@ public class Soldier : Observer
         }
         selectionBox.enabled = selected;
         healthBar.SetActive(selected);
-        //if(prevPos!=transform.position)
-        //{
-        //    soldierManager.RunInjuredSoldierCheck();
-        //}
     }
     bool CheckCanAttack()
     {
-        //if (dronesInSight.Count > 0 || structsInSight.Count>0)
         if (enemiesInSight.Count > 0)
         {
             state = SoldierState.Attacking;
-            //Debug.Log("state: " + state.ToString());
-            //Debug.Log("prev state: " + prevState.ToString());
-
             return true;
         }
         else
         {
-            //Debug.Log("state: " + state.ToString());
-            //Debug.Log("prev state: " + prevState.ToString());
             state = prevState;
             return false;
         }
@@ -326,13 +308,8 @@ public class Soldier : Observer
     }
     void AimWeaponAt(Transform target)
     {
-        //transform.LookAt(target);
         Vector3 targetPostition = new Vector3(target.position.x, transform.position.y,target.position.z);
         transform.LookAt(targetPostition);
-        //Quaternion lookRot = Quaternion.LookRotation(lookDir);
-        ////transform.rotation.eulerAngles.z
-        //lookRot.SetEulerAngles(0f, lookRot.eulerAngles.y,0f);
-        //transform.rotation = lookRot;
     }
 
     public override void UpdateLowestHPSoldier()
@@ -350,7 +327,6 @@ public class Soldier : Observer
         enemiesInSightPosArr = new Vector3[enemiesInSight.Count];
         for (int i = 0; i < enemiesInSightPosArr.Length; i++)
         {
-            //if (enemiesInSight[i])
             enemiesInSightPosArr[i] = enemiesInSight[i].transform.position;
         }
         enemiesInSightTree = KDTree.MakeFromPoints(enemiesInSightPosArr);
@@ -378,21 +354,10 @@ public class Soldier : Observer
         int nearest = enemiesInSightTree.FindNearest(transform.position);
         return enemiesInSight[nearest];
     }
-    //public void EquipWeapon(GameObject _weapon)
-    //{
-    //    //Destroy(gameObject.GetComponentInChildren<Weapon>().gameObject);
-    //    _weapon.transform.parent = shootPoint;
-    //    _weapon.transform.position = Vector3.zero;
-    //    _weapon.transform.rotation = Quaternion.identity;
-
-    //    currentWeapon = _weapon.GetComponent<Weapon>();
-    //    currentWeapon.shootPoint = shootPoint;
-    //    sight.UpdateSight(currentWeapon.range);
-    //}
+    
     public void EquipWeapon(string wpnName)
     {
         GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
-        //for (int i = bullets.Length-1; i >=0; i--)
         for (int i = 0; i < bullets.Length; i++)
         {
             if (bullets[i] && bullets[i].GetComponent<ProjectileDamager>().origin == gameObject)
@@ -480,19 +445,4 @@ public class Soldier : Observer
         else
             return null;
     }
-    //public override void UpdateDronesInSight(List<DroneBehavior> drones)
-    //{
-    //    //Debug.Log("Drone count: " + drones.Count);
-    //    dronesInSight = drones;
-    //    if (drones.Count > 0)
-    //        UpdateDroneKDTree();
-    //}
-    //public override void UpdateStructsInSight(List<SwarmSpawner> structs)
-    //{
-    //    structsInSight = structs;
-    //    if (structs.Count > 0)
-    //        UpdateStructsKDTree();
-
-    //}
-
 }

@@ -6,7 +6,6 @@ public class Health : Subject
     public GameObject bloodSplatterPrefab;
     public int maxHealth;
 
-    [SerializeField]
     private int health;
 
     public int GetHealth
@@ -123,16 +122,11 @@ public class Health : Subject
                 Invoke("Kill", 1.0f);
                 break;
             case "EnemyStructure":
-                //GameObject blood = Instantiate(bloodSplatterPrefab, transform.position + transform.up*.5f, transform.rotation) as GameObject;
-                //GameObject.Destroy(blood, 2.0f);
                 NotifyGiveCredits(spawner.resoureValue);
                 NotifyDead();
-                //spawner.enabled = false;
                 Invoke("Kill", 1.0f);
                 break;
             case "Soldier":
-                //Debug.Log("startDying");
-                
                 soldierManager.SoldierDied(soldier);
                 AudioManager.Instance.StopSound(AudioManager.Sound.HealingBeam);
                 AudioManager.Instance.StopSound(AudioManager.Sound.LightningGun);
@@ -199,11 +193,4 @@ public class Health : Subject
             obs.UpdateNumEnemies(-1);
         }
     }
-    void ReturnToPool()
-    {
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.angularVelocity = Vector3.zero;
-        ObjectPool.instance.PoolObject(gameObject);
-    }
-    
 }

@@ -107,18 +107,12 @@ public class Weapon_HealingBeam : Weapon {
                 Vector3 newPos = shootPoint.position;
                 Vector3 offset = Vector3.zero;
                 offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-lineNoise, lineNoise);
-                offset.y = newPos.y + i * shootPoint.forward.y;// +Random.Range(-lineNoise, lineNoise);
-                offset.z = newPos.z + i * shootPoint.forward.z;// +Random.Range(-lineNoise, lineNoise);
+                offset.y = newPos.y + i * shootPoint.forward.y;
+                offset.z = newPos.z + i * shootPoint.forward.z;
                 newPos = offset;
                 line.SetPosition(i, newPos);
-                //noise += noiseIncrement;
             }
         }
-        //line.SetPosition(length - 1, target.position);
-        
-        //line.SetVertexCount(2);
-        //line.SetPosition(0, transform.position);
-        //line.SetPosition(1, target.position);
     }
     
 }

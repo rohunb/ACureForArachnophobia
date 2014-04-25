@@ -18,21 +18,8 @@ public class ProjectileMover : MonoBehaviour
 
     }
 
-    //void Start()
-    //{
-    //    rigidbody.velocity = transform.forward * speed;
-    //    timeToDestroy = range / speed;
-    //    //Destroy(gameObject, timeToDestroy);
-    //    //Invoke("ReturnToPool", timeToDestroy);
-    //    currentTime = 0f;
-    //}
     void Update()
     {
-        //if(currentTime>=timeToDestroy)
-        //{
-        //    ReturnToPool();
-        //}
-        //currentTime += Time.deltaTime;
         if(Vector3.Distance(transform.position,originPos)>range+1)
         {
             ReturnToPool();

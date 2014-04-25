@@ -15,12 +15,7 @@ public class InputAcceptor : MonoBehaviour {
     {
         inputResolver = gameObject.GetComponent<InputResolver>();
     }
-	// Use this for initialization
-	void Start () {
-	    
-	}
 	
-	// Update is called once per frame
 	void Update () {
 	    if(Input.GetMouseButtonDown(1))
         {
@@ -82,7 +77,6 @@ public class InputAcceptor : MonoBehaviour {
         Rect selectionBox=new Rect(minX,minY,maxX-minX,maxY-minY);
         GUI.Box(selectionBox, "");
         inputResolver.ResolveInput(InputResolver.InputResponse.DragSelect, selectionBox);
-        //GUI.Box(new Rect(dragStartPos.x,dragStartPos.y,dragEndPos.x-dragStartPos.x,dragEndPos.y-dragStartPos.y), "");
     }
     
 }

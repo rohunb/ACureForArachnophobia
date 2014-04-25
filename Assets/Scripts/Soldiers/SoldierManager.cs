@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SoldierManager : Subject {
-    
+public class SoldierManager : Subject
+{
+
     public List<Soldier> soldiers;
     public List<Soldier> selectedSoldiers;
 
@@ -12,8 +13,9 @@ public class SoldierManager : Subject {
 
     InputResolver inputResolver;
 
-	// Use this for initialization
-	void Awake () {
+    // Use this for initialization
+    void Awake()
+    {
         allUnitsArr = GameObject.FindObjectsOfType<Soldier>();
         soldiers = new List<Soldier>(allUnitsArr);
         prevSoldierPos = new List<Vector3>();
@@ -22,47 +24,34 @@ public class SoldierManager : Subject {
             soldiers[i].soldierSight.GetComponent<SoldierSight>().Attach(soldiers[i]);
             prevSoldierPos.Add(soldiers[i].transform.position);
         }
-        inputResolver = GameObject.FindObjectOfType<InputResolver>();       
-	}
-	void Start()
+        inputResolver = GameObject.FindObjectOfType<InputResolver>();
+    }
+    void Start()
     {
         Notify();
     }
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update()
+    {
         bool toNotify = false;
-        //if(soldiers.Count != prevSoldierPos.Count)
-        //{
-        //    prevSoldierPos.Clear();
-        //    for (int i = 0; i < soldiers.Count; i++)
-        //    {
-        //        prevSoldierPos[i] = soldiers[i].transform.position;
-
-        //    }
-        //}
-        //else
+        for (int i = 0; i < soldiers.Count; i++)
         {
-            for (int i = 0; i < soldiers.Count; i++)
+            if (soldiers[i])
             {
-                if (soldiers[i])
+                if (soldiers[i].transform.position != prevSoldierPos[i])
                 {
-                    if (soldiers[i].transform.position != prevSoldierPos[i])
-                    {
-                        toNotify = true;
-                    }
-                    prevSoldierPos[i] = soldiers[i].transform.position;
-                    if (toNotify)
-                    {
-                        Notify();
-                    }
+                    toNotify = true;
                 }
-            }  
-
+                prevSoldierPos[i] = soldiers[i].transform.position;
+                if (toNotify)
+                {
+                    Notify();
+                }
+            }
         }
-	}
+    }
     public void SoldierDied(Soldier _soldier)
     {
-        //Debug.Log("soldier Died");
         soldiers.Remove(_soldier);
         selectedSoldiers.Remove(_soldier);
         inputResolver.selectedSoldiers.Remove(_soldier);
@@ -70,24 +59,22 @@ public class SoldierManager : Subject {
         prevSoldierPos.Clear();
         for (int i = 0; i < soldiers.Count; i++)
         {
-           // prevSoldierPos[i] = soldiers[i].transform.position;
             prevSoldierPos.Add(soldiers[i].transform.position);
-            
         }
         Notify();
-        if(soldiers.Count<=0)
+        if (soldiers.Count <= 0)
         {
             SceneManager.Instance.GameEnd(false);
         }
     }
     public Soldier FindNearestInjuredSoldierWithinRange(Soldier soldier, float range)
     {
-        Soldier lowestHPSoldier=null;
+        Soldier lowestHPSoldier = null;
         List<Soldier> soldiersInRange = new List<Soldier>();
-        List<float> distances=new List<float>();
+        List<float> distances = new List<float>();
         float lowestDist;
         Vector3 originSoldierPos = soldier.transform.position;
-        
+
         for (int i = 0; i < soldiers.Count; i++)
         {
             if (soldiers[i] != soldier)
@@ -131,8 +118,6 @@ public class SoldierManager : Subject {
             }
             else if (currentSoldierHP == lowestHPSoldierHP)
             {
-                //float distToCurrent = Vector3.Distance(soldier.transform.position, soldiersInRange[i].transform.position);
-                //float distToLowest = Vector3.Distance(soldier.transform.position, lowestHPSoldier.transform.position);
                 float distToCurrent = distances[i];
                 if (distToCurrent < lowestDist)
                 {
@@ -147,7 +132,7 @@ public class SoldierManager : Subject {
     {
         foreach (Soldier soldier in soldiers)
         {
-            if(soldier.currentWeapon.wpnName=="HealingBeam")
+            if (soldier.currentWeapon.wpnName == "HealingBeam")
             {
                 soldier.UpdateLowestHPSoldier();
                 return;
@@ -157,7 +142,7 @@ public class SoldierManager : Subject {
     public void AddNewSoldier(Soldier soldier)
     {
         soldiers.Add(soldier);
-        
+
     }
     public override void Notify()
     {
@@ -166,6 +151,6 @@ public class SoldierManager : Subject {
             obs.UpdateSoldierPos(prevSoldierPos.ToArray());
         }
     }
-    
-    
+
+
 }

@@ -2,39 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameManager : MonoBehaviour {
-
+public class GameManager : MonoBehaviour
+{
     public int MAX_DRONES = 100;
 
     EnemyController enemyController;
     SoldierManager soldierManager;
-    
 
-    
-
-    
-
-	// Use this for initialization
-	void Awake () {
-        //if (currentScene == GameScene.Game)
+    void Awake()
+    {
         {
             enemyController = GameObject.FindGameObjectWithTag("EnemyController").GetComponent<EnemyController>();
             soldierManager = GameObject.FindObjectOfType<SoldierManager>();
             soldierManager.Attach(enemyController);
         }
-
-
-	}
-	void Start()
+    }
+    void Start()
     {
         enemyController.maxDrones = MAX_DRONES;
-        AudioManager.Instance.PlaySound(AudioManager.Sound.BackgroundTrack, true);
     }
-	void Update()
-    {
-        
-    }
-    /*
-    
-     * */
+
 }

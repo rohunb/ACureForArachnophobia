@@ -59,28 +59,6 @@ public class Weapon_Lightning1 : Weapon
     }
     void CreateBeamEffect()
     {
-        //line.enabled = true;
-        //line.SetVertexCount(length);
-        //float noise = 0.1f;
-        //float noiseIncrement = lineNoise / (float)length;
-        //noiseIncrement *= 2f;
-        //line.SetPosition(0, shootPoint.position);
-        //for (int i = 1; i < length-1; i++)
-        //{
-        //    Vector3 newPos = shootPoint.position;
-        //    Vector3 offset = Vector3.zero;
-        //    offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-noise, noise);
-        //    //offset.x = newPos.x + i * shootPoint.forward.x + Random.Range(-lineNoise, lineNoise);
-        //    offset.y = newPos.y + i * shootPoint.forward.y;// +Random.Range(-lineNoise, lineNoise);
-        //    offset.z = newPos.z + i * shootPoint.forward.z;// +Random.Range(-lineNoise, lineNoise);
-        //    newPos = offset;
-        //    line.SetPosition(i, newPos);
-        //    if(i>length/2)
-        //        noise -= noiseIncrement;
-        //    else
-        //        noise += noiseIncrement;
-        //}
-        //line.SetPosition(length-1, shootPoint.position+shootPoint.forward*(length-1));
         int numBeams = Random.Range(2, 5);
         while (lightningSpawns.Count < numBeams)
         {
@@ -119,19 +97,6 @@ public class Weapon_Lightning1 : Weapon
         }
         if (didDamage)
             currentTimer = 0f;
-        //RaycastHit hit;
-        //Ray ray = new Ray(shootPoint.position, shootPoint.forward);
-        //Debug.DrawLine(shootPoint.position, shootPoint.forward.normalized * range);
-        //if (Physics.Raycast(ray, out hit, range+1))
-        //{
-        //    GameObject other = hit.transform.gameObject;
-        //    if (currentTimer >= reloadTimer && (other.tag == "Enemy" || other.tag == "EnemyStructure"))
-        //    {
-        //        Debug.Log(damage);
-        //        other.GetComponent<Health>().UpdateHealth(-damage);
-        //        currentTimer = 0f;
-        //    }
-        //}
-
+      
     }
 }

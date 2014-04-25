@@ -51,10 +51,8 @@ public class UpgradeManager : Observer {
     {
         inputResolver = GameObject.FindGameObjectWithTag("GameController").GetComponent<InputResolver>();
     }
-    // Use this for initialization
 	void Start () {
 
-        //creditsLabalRect = new Rect(Screen.width / 17.55f, Screen.height / 1.22f, Screen.width / 9f, Screen.height / 24f);
         creditsText.text = "Credits: " + credits;
         windowSizeCurrent = windowSizeClosed;
         closeButtonCurrentPos = closeButtonClosedPos;
@@ -136,7 +134,6 @@ public class UpgradeManager : Observer {
                         EquipWeapon("HealingBeam");
                         break;
                     case "CloseButton":
-                        Debug.Log("Close");
                             menuState=MenuState.Closing;
                             break;
                     default:
@@ -291,7 +288,6 @@ public class UpgradeManager : Observer {
     }
     void OnGUI()
     {
-        //GUI.Label(creditsLabalRect, "<color=black><size=16> Credits: " + credits + "</size></color>");
         if (displayEquips)
         {
             foreach (Soldier soldier in inputResolver.selectedSoldiers)
