@@ -36,6 +36,8 @@ public class DroneBehavior : Enemy
     // other members of my swarm
     public List<GameObject> drones;
     public SwarmSpawner swarm;
+    private Transform trans;
+    private Rigidbody rbody;
 
     public Transform destination;
 
@@ -60,17 +62,22 @@ public class DroneBehavior : Enemy
         {
             if (currentState != AI_State.Attacking)
                 Flock();
-            if (rigidbody.velocity.magnitude > 0f && rigidbody.velocity.normalized != Vector3.zero)
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(rigidbody.velocity.normalized), Time.deltaTime * turnSpeed);
+            if (rbody.velocity.magnitude > 0f && rbody.velocity.normalized != Vector3.zero)
+                trans.rotation = Quaternion.Slerp(trans.rotation, Quaternion.LookRotation(rbody.velocity.normalized), Time.deltaTime * turnSpeed);
         }
         else
         {
-            rigidbody.velocity = Vector3.zero;
-            rigidbody.angularVelocity = Vector3.zero;
+            rbody.velocity = Vector3.zero;
+            rbody.angularVelocity = Vector3.zero;
         }
 
     }
 
+    private void Awake()
+    {
+        trans = transform;
+        rbody= rigidbody;
+    }
     protected virtual void Start()
     {
         moveToWeight = 0f;
@@ -81,7 +88,7 @@ public class DroneBehavior : Enemy
     {
 
         if (destination)
-            dist = Vector3.Distance(destination.position, transform.position);
+            dist = Vector3.Distance(destination.position, trans.position);
 
 
 
@@ -139,8 +146,8 @@ public class DroneBehavior : Enemy
                     currentState = AI_State.Swarming;
                     break;
                 }
-                rigidbody.velocity = Vector3.zero;
-                rigidbody.angularVelocity = Vector3.zero;
+                rbody.velocity = Vector3.zero;
+                rbody.angularVelocity = Vector3.zero;
 
                 if (soldierInSight)
                 {
@@ -158,8 +165,8 @@ public class DroneBehavior : Enemy
                     currentState = AI_State.Swarming;
                     break;
                 }
-                Vector3 targetPostition = new Vector3(destination.position.x, transform.position.y, destination.position.z);
-                transform.LookAt(targetPostition);
+                Vector3 targetPostition = new Vector3(destination.position.x, trans.position.y, destination.position.z);
+                trans.LookAt(targetPostition);
                 Attack();
                 separationWeight = 0f;
                 alignmentWeight = 0f;
@@ -212,10 +219,10 @@ public class DroneBehavior : Enemy
         newVelocity += _moveToDest * moveToWeight;
 
         newVelocity = newVelocity * speed;
-        newVelocity = rigidbody.velocity + newVelocity;
+        newVelocity = rbody.velocity + newVelocity;
         newVelocity.y = 0f;
 
-        rigidbody.velocity = Limit(newVelocity, maxSpeed);
+        rbody.velocity = Limit(newVelocity, maxSpeed);
 
     }
 
@@ -238,13 +245,17 @@ public class DroneBehavior : Enemy
         {
             if (drones[i] == null) continue;
 
-            float distance = Vector3.Distance(transform.position, drones[i].transform.position);
+            Vector3 dronePos = drones[i].transform.position;
+            Vector3 droneVel = drones[i].rigidbody.velocity;
+            Vector3 swarmPos = swarm.transform.position;
+            float distance = Vector3.Distance(trans.position, dronePos);
+
 
             // separation
             if (distance > 0 && distance < desiredSeparation)
             {
                 // calculate vector headed away from myself
-                Vector3 direction = transform.position - drones[i].transform.position;
+                Vector3 direction = trans.position - dronePos;
                 direction.Normalize();
                 direction = direction / distance; // weight by distance
                 separationSum += direction;
@@ -254,27 +265,27 @@ public class DroneBehavior : Enemy
             // alignment & cohesion
             if (distance > 0 && distance < neighborRadius)
             {
-                alignmentSum += drones[i].rigidbody.velocity;
+                alignmentSum += droneVel;
                 alignmentCount++;
 
-                cohesionSum += drones[i].transform.position;
+                cohesionSum += dronePos;
                 cohesionCount++;
             }
 
             // bounds
-            Bounds bounds = new Bounds(swarm.transform.position, new Vector3(swarm.swarmBounds.x, 10000f, swarm.swarmBounds.y));
-            if (distance > 0 && !bounds.Contains(drones[i].transform.position))
+            Bounds bounds = new Bounds(swarmPos, new Vector3(swarm.swarmBounds.x, 10000f, swarm.swarmBounds.y));
+            if (distance > 0 && !bounds.Contains(dronePos))
             {
-                Vector3 diff = transform.position - swarm.transform.position;
+                Vector3 diff = trans.position - swarmPos;
                 if (diff.magnitude > 0)
                 {
-                    boundsSum += swarm.transform.position;
+                    boundsSum += swarmPos;
                     boundsCount++;
                 }
             }
 
             //move to
-            if (destination && Vector3.Distance(destination.position, swarm.transform.position) > 4f)
+            if (destination && Vector3.Distance(destination.position, swarmPos) > 4f)
             {
                 moveToSum += destination.position;
                 moveToCount++;
@@ -294,10 +305,10 @@ public class DroneBehavior : Enemy
     {
         // the steering vector
         Vector3 steer = Vector3.zero;
-        Vector3 targetDirection = target - transform.position;
+        Vector3 targetDirection = target - trans.position;
         float targetDistance = targetDirection.magnitude;
 
-        transform.LookAt(target);
+        trans.LookAt(target);
 
         if (targetDistance > 0)
         {
@@ -316,7 +327,7 @@ public class DroneBehavior : Enemy
             }
 
             // set steering vector
-            steer = targetDirection - rigidbody.velocity;
+            steer = targetDirection - rbody.velocity;
             steer = Limit(steer, maxSteer);
         }
 
