@@ -61,7 +61,7 @@ public class InputResolver : MonoBehaviour {
                         }
 
                     }
-                    else if (selectedSoldiers != null)
+                    else if (selectedSoldiers != null && selectedSoldiers.Count >0)
                     {
                         selectedSoldiers[0].SetAttackMove(new Vector3(destination.x, selectedSoldiers[0].transform.position.y, destination.z));
                     }
